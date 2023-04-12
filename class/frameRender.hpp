@@ -34,6 +34,12 @@ void frameRender() {
             if (Globals::event.type == SDL_QUIT)
                 Globals::shouldQuit = true;
 
+            if (Globals::event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+                Globals::isInFocus = false;
+
+            if (Globals::event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+                Globals::isInFocus = true;
+
             if (Globals::event.type == SDL_KEYDOWN) {
                 if (Globals::event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
                     Globals::shouldQuit = true;
@@ -49,19 +55,17 @@ void frameRender() {
         SDL_RenderDrawLine(renderer,Globals::lineX1,Globals::lineY1,Globals::lineX2,Globals::lineY2);
 
 
-
-
-        if (Globals::tickCount % 64 == 0) {
-            std::cout << "Last frame rendered in: " << (Globals::frameDelta / 1000) << "ms." << std::endl;
-            std::cout << Globals::frameCount << " frames have elapsed." << std::endl;
-        }
         SDL_RenderPresent(renderer);
+
+        //Decrease framerate when focus is lost.
+        if(!Globals::isInFocus)
+            std::this_thread::sleep_for(std::chrono::microseconds((62500 - Globals::minimumFrameDelta)));
         auto stop = std::chrono::high_resolution_clock::now();
         //limit framerate to 1000.
-        Globals::frameDelta = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
-        if(Globals::frameDelta < Globals::minimumFrameDelta) {
+        Globals::frameDelta = abs(std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count());
+        if(Globals::frameDelta < Globals::minimumFrameDelta && Globals::isInFocus)
             std::this_thread::sleep_for(std::chrono::microseconds((Globals::minimumFrameDelta - (int) Globals::frameDelta)));
-        }
+
         Globals::frameCount = Globals::frameCount + 1;
     }
     SDL_DestroyRenderer(renderer);
