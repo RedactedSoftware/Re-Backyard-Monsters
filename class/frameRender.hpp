@@ -45,6 +45,24 @@ void frameRender() {
                     Globals::shouldQuit = true;
                 if (Globals::event.key.keysym.scancode == SDL_SCANCODE_INSERT)
                     Globals::isPaused = !Globals::isPaused;
+                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_W)
+                    Globals::isWDown = true;
+                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_A)
+                    Globals::isADown = true;
+                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_S)
+                    Globals::isSDown = true;
+                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_D)
+                    Globals::isDDown = true;
+            }
+            if (Globals::event.type == SDL_KEYUP) {
+                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_W)
+                    Globals::isWDown = false;
+                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_A)
+                    Globals::isADown = false;
+                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_S)
+                    Globals::isSDown = false;
+                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_D)
+                    Globals::isDDown = false;
             }
         }
          auto start = std::chrono::high_resolution_clock::now();
@@ -53,10 +71,15 @@ void frameRender() {
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
         SDL_RenderDrawLine(renderer,Globals::lineX1,Globals::lineY1,Globals::lineX2,Globals::lineY2);
+        SDL_RenderFillRect(renderer,&Globals::localPlayer);
+
+
+
+
+
 
 
         SDL_RenderPresent(renderer);
-
         //Decrease framerate when focus is lost.
         if(!Globals::isInFocus)
             std::this_thread::sleep_for(std::chrono::microseconds((62500 - Globals::minimumFrameDelta)));

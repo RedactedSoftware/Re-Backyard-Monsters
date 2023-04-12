@@ -14,7 +14,14 @@ void gameTick() {
                 Globals::lineX1 = 0;
                 Globals::lineX2 = Globals::screenWidth;
             }
-
+            if(Globals::isWDown)
+                Globals::localPlayer.y = Globals::localPlayer.y -2;
+            if(Globals::isSDown)
+                Globals::localPlayer.y = Globals::localPlayer.y +2;
+            if(Globals::isADown)
+                Globals::localPlayer.x = Globals::localPlayer.x -2;
+            if(Globals::isDDown)
+                Globals::localPlayer.x = Globals::localPlayer.x +2;
             //execute once per second
             if (Globals::tickCount % 64 == 0) {
                 std::cout << "Last tick completed in: " << (Globals::tickDelta / 1000) << "ms, " << "sleeping "

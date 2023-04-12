@@ -17,5 +17,10 @@ namespace Globals {
     inline int lineY1 = 270;
     inline int lineX2 = 960;
     inline int lineY2 = 270;
+    inline SDL_Rect localPlayer = {screenWidth/2,screenHeight/2,16,16};
     inline bool isInFocus = (bool) nullptr;
+    inline bool isWDown = false;
+    inline bool isADown = false;
+    inline bool isSDown = false;
+    inline bool isDDown = false;
 }
