@@ -9,7 +9,7 @@ namespace Globals {
     inline SDL_Window *window = nullptr;
     inline SDL_Event event;
     inline bool shouldQuit = false;
-    inline bool shouldTick = true;
+    inline bool isPaused = false;
     inline int tickCount = 1;
     inline int minimumTickDelta = 15625; // 64 tick.
     inline float tickDelta = 0;

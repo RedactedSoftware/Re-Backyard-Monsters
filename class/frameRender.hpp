@@ -31,8 +31,14 @@ void frameRender() {
     }
     while (!Globals::shouldQuit) {
         while (SDL_PollEvent(&Globals::event)) {
-            if(Globals::event.type == SDL_QUIT) {
+            if (Globals::event.type == SDL_QUIT)
                 Globals::shouldQuit = true;
+
+            if (Globals::event.type == SDL_KEYDOWN) {
+                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+                    Globals::shouldQuit = true;
+                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_INSERT)
+                    Globals::isPaused = !Globals::isPaused;
             }
         }
          auto start = std::chrono::high_resolution_clock::now();
@@ -45,8 +51,10 @@ void frameRender() {
 
 
 
-
-
+        if (Globals::tickCount % 64 == 0) {
+            std::cout << "Last frame rendered in: " << (Globals::frameDelta / 1000) << "ms." << std::endl;
+            std::cout << Globals::frameCount << " frames have elapsed." << std::endl;
+        }
         SDL_RenderPresent(renderer);
         auto stop = std::chrono::high_resolution_clock::now();
         //limit framerate to 1000.
