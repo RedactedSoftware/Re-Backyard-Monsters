@@ -39,38 +39,16 @@ void frameRender() {
 
             if (Globals::event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
                 Globals::isInFocus = true;
+            keyInput::detectKeyDownEvent();
+            keyInput::detectKeyUpEvent();
 
-            if (Globals::event.type == SDL_KEYDOWN) {
-                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-                    Globals::shouldQuit = true;
-                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_INSERT)
-                    Globals::isPaused = !Globals::isPaused;
-                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_W)
-                    Globals::isWDown = true;
-                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_A)
-                    Globals::isADown = true;
-                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_S)
-                    Globals::isSDown = true;
-                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_D)
-                    Globals::isDDown = true;
-            }
-            if (Globals::event.type == SDL_KEYUP) {
-                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_W)
-                    Globals::isWDown = false;
-                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_A)
-                    Globals::isADown = false;
-                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_S)
-                    Globals::isSDown = false;
-                if (Globals::event.key.keysym.scancode == SDL_SCANCODE_D)
-                    Globals::isDDown = false;
-            }
         }
          auto start = std::chrono::high_resolution_clock::now();
         //do stuff.
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
-        SDL_RenderDrawLine(renderer,Globals::lineX1,Globals::lineY1,Globals::lineX2,Globals::lineY2);
+        SDL_RenderFillRect(renderer,&Globals::floor);
         SDL_RenderFillRect(renderer,&Globals::localPlayer);
 
 
@@ -88,7 +66,6 @@ void frameRender() {
         Globals::frameDelta = abs(std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count());
         if(Globals::frameDelta < Globals::minimumFrameDelta && Globals::isInFocus)
             std::this_thread::sleep_for(std::chrono::microseconds((Globals::minimumFrameDelta - (int) Globals::frameDelta)));
-
         Globals::frameCount = Globals::frameCount + 1;
     }
     SDL_DestroyRenderer(renderer);

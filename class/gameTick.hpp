@@ -2,26 +2,36 @@
 #include <thread>
 #include <iostream>
 #include "globals.hpp"
+#include "keyInput.hpp"
 
 void gameTick() {
     while (true) {
         if (!Globals::isPaused) {
             auto start = std::chrono::high_resolution_clock::now();
             //Do stuff.
-            Globals::lineX1 = Globals::lineX1 + 2;
-            Globals::lineX2 = Globals::lineX2 - 2;
-            if (Globals::lineX1 > Globals::screenWidth) {
-                Globals::lineX1 = 0;
-                Globals::lineX2 = Globals::screenWidth;
+            if(keyInput::isWDown)
+                Globals::localPlayer.y = Globals::localPlayer.y -4;
+            if(keyInput::isSDown)
+                Globals::localPlayer.y = Globals::localPlayer.y +4;
+            if(keyInput::isADown)
+                Globals::localPlayer.x = Globals::localPlayer.x -4;
+            if(keyInput::isDDown)
+                Globals::localPlayer.x = Globals::localPlayer.x +4;
+
+            if(Globals::localPlayer.y > Globals::screenHeight - Globals::localPlayer.h)
+                Globals::localPlayer.y = Globals::screenHeight - Globals::localPlayer.h;
+            if(Globals::localPlayer.y < 0)
+                Globals::localPlayer.y = 0;
+            if(Globals::localPlayer.x > Globals::screenWidth - Globals::localPlayer.w)
+                Globals::localPlayer.x = Globals::screenWidth - Globals::localPlayer.w;
+            if(Globals::localPlayer.x < 0)
+                Globals::localPlayer.x = 0;
+            if(SDL_HasIntersection(&Globals::localPlayer,&Globals::floor)) {
+                Globals::localPlayer.y = Globals::floor.y - Globals::localPlayer.h;
             }
-            if(Globals::isWDown)
-                Globals::localPlayer.y = Globals::localPlayer.y -2;
-            if(Globals::isSDown)
+            if(!SDL_HasIntersection(&Globals::localPlayer,&Globals::floor))
                 Globals::localPlayer.y = Globals::localPlayer.y +2;
-            if(Globals::isADown)
-                Globals::localPlayer.x = Globals::localPlayer.x -2;
-            if(Globals::isDDown)
-                Globals::localPlayer.x = Globals::localPlayer.x +2;
+
             //execute once per second
             if (Globals::tickCount % 64 == 0) {
                 std::cout << "Last tick completed in: " << (Globals::tickDelta / 1000) << "ms, " << "sleeping "
