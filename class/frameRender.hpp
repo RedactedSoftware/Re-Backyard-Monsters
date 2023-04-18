@@ -3,12 +3,15 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "globals.hpp"
+#include "entityList.hpp"
 
 SDL_Renderer* renderer = nullptr;
 SDL_Surface* textureSurface = nullptr;
-
+entity initialPlayer = {LOCALPLAYER,true,480,270,16,16,0,0,480,270,16,16};
 void frameRender() {
     if (Globals::frameCount == 1) {
+        storeEntity(initialPlayer);
+
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
         }
@@ -21,6 +24,8 @@ void frameRender() {
         SDL_RenderSetLogicalSize(renderer, 960, 540);
         SDL_GL_SetSwapInterval(0);;
         SDL_UpdateWindowSurface(Globals::window);
+
+        //absolute path for debugging purposes.
         textureSurface = SDL_LoadBMP("/home/william/Documents/GitHub/Experiment/resources/image.bmp");
         if (textureSurface == nullptr) {
             textureSurface = SDL_LoadBMP("/home/william/Documents/GitHub/Experiment/resources/missingTexture.bmp");
@@ -44,12 +49,13 @@ void frameRender() {
 
         }
          auto start = std::chrono::high_resolution_clock::now();
+        entity localPlayer = getLocalPlayer();
         //do stuff.
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
         SDL_RenderFillRect(renderer,&Globals::floor);
-        SDL_RenderFillRect(renderer,&Globals::localPlayer);
+        SDL_RenderFillRect(renderer,&localPlayer.renderedEntity);
 
 
 
