@@ -51,6 +51,7 @@ void frameRender() {
         Texture::loadMedia();
         SDL_SetRenderDrawColor(Renderer::renderer,0,0,0,255);
         SDL_RenderClear(Renderer::renderer);
+        SDL_SetRenderDrawColor(Renderer::renderer,255,255,255,255);
         Entity::renderEntities();
 
         SDL_RenderPresent(Renderer::renderer);
