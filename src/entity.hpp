@@ -52,8 +52,7 @@ namespace Entity {
         std::reverse(Entity::entityList.begin(),Entity::entityList.end());
         for (int i = 0; i < Entity::entityList.size(); i++){
             if(Entity::entityList[i].draw) {
-
-                    SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
+                SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
                     SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
                                    &Entity::entityList[i].renderedEntity);
 
