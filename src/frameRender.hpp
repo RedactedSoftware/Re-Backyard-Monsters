@@ -2,19 +2,15 @@
 #include <thread>
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "globals.hpp"
 #include "entity.hpp"
 #include "texture.hpp"
 
-
-SDL_Surface* textureSurface = nullptr;
-
-
-
 void frameRender() {
     if (Globals::frameCount == 1) {
-        Entity::storeEntity(entity{PLAYER,true,true,Globals::screenWidth / 2,Globals::screenHeight / 2,4,4,0,0,Globals::screenWidth / 2,Globals::screenHeight / 2,4,4});
-        Entity::storeEntity(entity{PEBBLESHINER,false,true,0,0,64,64,0,0,0,0,64,64});
+        Entity::storeEntity(entity{PLAYER,true,0,false,Globals::screenWidth / 2,Globals::screenHeight / 2,
+                                   4,4,Globals::screenWidth / 2,Globals::screenHeight / 2,4,4});
+        Entity::storeEntity(entity{PEBBLESHINER,false,true,0,0,
+                                   64,64,0,0,0,64,64});
 
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
@@ -28,19 +24,12 @@ void frameRender() {
         int imgFlags = IMG_INIT_PNG;
         if( !( IMG_Init( imgFlags ) & imgFlags ) )
             std::cerr << "SDL_Error: " << "Couldn't init SDL_Image." << std::endl;
-        Globals::renderer = SDL_CreateRenderer(Globals::window, -1, SDL_RENDERER_ACCELERATED);
-        SDL_RenderSetLogicalSize(Globals::renderer, 1152, 864);
+        Renderer::renderer = SDL_CreateRenderer(Globals::window, -1, SDL_RENDERER_ACCELERATED);
+        SDL_RenderSetLogicalSize(Renderer::renderer, 1152, 864);
         SDL_GL_SetSwapInterval(0);;
         SDL_UpdateWindowSurface(Globals::window);
 
         //absolute path for debugging purposes.
-        textureSurface = SDL_LoadBMP("/home/william/Documents/GitHub/Experiment/resources/image.bmp");
-        if (textureSurface == nullptr) {
-            textureSurface = SDL_LoadBMP("/home/william/Documents/GitHub/Experiment/resources/missingTexture.bmp");
-            std::cerr << "SDL_Error: " << "Could not load image.bmp" << std::endl;
-            std::cout << textureSurface << std::endl;
-        }
-
     }
     while (!Globals::shouldQuit) {
         while (SDL_PollEvent(&Globals::event)) {
@@ -65,17 +54,16 @@ void frameRender() {
             }
         }
         //do stuff.
-        SDL_SetRenderDrawColor(Globals::renderer,0,0,0,255);
-        SDL_RenderClear(Globals::renderer);
         Texture::loadMedia();
-        SDL_SetRenderDrawColor(Globals::renderer,255,255,255,255);
-        SDL_RenderFillRect(Globals::renderer,&pebbleShiner.renderedEntity);
-        SDL_RenderCopy( Globals::renderer, Texture::pebbleShiner, NULL, &pebbleShiner.renderedEntity );
-        SDL_RenderFillRect(Globals::renderer,&localPlayer.renderedEntity);
+        SDL_SetRenderDrawColor(Renderer::renderer,0,0,0,255);
+        SDL_RenderClear(Renderer::renderer);
+        SDL_SetRenderDrawColor(Renderer::renderer,255,255,255,255);
+        Entity::renderTexturedEntity(pebbleShiner);
+        SDL_RenderFillRect(Renderer::renderer,&localPlayer.renderedEntity);
 
 
 
-        SDL_RenderPresent(Globals::renderer);
+        SDL_RenderPresent(Renderer::renderer);
         //Decrease framerate when focus is lost.
         if(!Globals::isInFocus)
             std::this_thread::sleep_for(std::chrono::microseconds((62500 - Globals::minimumFrameDelta)));
@@ -86,7 +74,7 @@ void frameRender() {
             std::this_thread::sleep_for(std::chrono::microseconds((Globals::minimumFrameDelta - (int) Globals::frameDelta)));
         Globals::frameCount = Globals::frameCount + 1;
     }
-    SDL_DestroyRenderer(Globals::renderer);
+    SDL_DestroyRenderer(Renderer::renderer);
     SDL_DestroyWindow(Globals::window);
     SDL_Quit();
     exit(1);

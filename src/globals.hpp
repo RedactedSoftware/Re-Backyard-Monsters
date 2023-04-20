@@ -11,7 +11,6 @@ namespace Globals {
     inline int frameCount = 1;
     inline SDL_Window *window = nullptr;
     inline SDL_Event event;
-    SDL_Renderer* renderer = nullptr;
     inline bool shouldQuit = false;
     inline bool isPaused = false;
     inline int tickCount = 1;
