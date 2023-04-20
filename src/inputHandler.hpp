@@ -45,6 +45,7 @@ namespace InputHandler {
     }
 
     inline std::vector<int> getMousePosition() {
+        //TODO Make this function as expected if the window has been resized.
         int x, y;
         std::vector<int> vector;
         if(Globals::isInFocus)

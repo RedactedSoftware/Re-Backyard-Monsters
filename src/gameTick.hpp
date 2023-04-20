@@ -7,17 +7,17 @@
 
 void gameTick() {
     while (true) {
-        //The first tick *must* be after the first frame has completed
+        //The first tick *must* be after the first frame has completed.
         if (Globals::frameCount == 1)
             std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        entity localPlayer = Entity::getLocalPlayer();
         if (!Globals::isPaused) {
-            entity localPlayer = Entity::getLocalPlayer();
             auto start = std::chrono::high_resolution_clock::now();
             //Do stuff.
             localPlayer.posX = InputHandler::getMousePosition()[0];
             localPlayer.posY = InputHandler::getMousePosition()[1];
 
-            //keep player in bounds
+            //Prevent the "player" from going off the screen.
             if(localPlayer.posY > Globals::screenHeight - localPlayer.height)
                 localPlayer.posY = Globals::screenHeight - localPlayer.height;
             if(localPlayer.posY < 0)
@@ -27,16 +27,6 @@ void gameTick() {
             if(localPlayer.height < 0)
                 localPlayer.height = 0;
 
-            //if player collides with the floor.
-            //TODO Check for collision myself to avoid having to use the rendered entity as it causes colliding entities to clip into each-other breifly.
-            if(SDL_HasIntersection(&localPlayer.renderedEntity,&Globals::floor)) {
-                localPlayer.posY = Globals::floor.y - localPlayer.height;
-            }
-            //gravity.
-            if(!SDL_HasIntersection(&localPlayer.renderedEntity,&Globals::floor)) {
-                localPlayer.posY = localPlayer.posY + 2;
-
-            }
 
             //execute once per second
             if (Globals::tickCount % 64 == 0) {

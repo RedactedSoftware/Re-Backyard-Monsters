@@ -7,7 +7,7 @@
 
 SDL_Renderer* renderer = nullptr;
 SDL_Surface* textureSurface = nullptr;
-entity initialPlayer = {PLAYER,true,true,Globals::screenWidth / 2,Globals::screenHeight / 2,16,16,0,0,Globals::screenWidth / 2,Globals::screenHeight / 2,16,16};
+entity initialPlayer = {PLAYER,true,true,Globals::screenWidth / 2,Globals::screenHeight / 2,2,2,0,0,Globals::screenWidth / 2,Globals::screenHeight / 2,2,2};
 void frameRender() {
     if (Globals::frameCount == 1) {
         Entity::storeEntity(initialPlayer);
@@ -54,7 +54,6 @@ void frameRender() {
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
-        SDL_RenderFillRect(renderer,&Globals::floor);
         SDL_RenderFillRect(renderer,&localPlayer.renderedEntity);
 
 

@@ -16,6 +16,5 @@ namespace Globals {
     inline int tickCount = 1;
     inline int minimumTickDelta = 15625; // 64 tick.
     inline float tickDelta = 0;
-    inline SDL_Rect floor = {0, screenHeight - 20, screenWidth, 20};
     inline bool isInFocus;
 }
