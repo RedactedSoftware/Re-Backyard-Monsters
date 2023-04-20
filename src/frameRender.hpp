@@ -3,25 +3,25 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "globals.hpp"
-#include "entityList.hpp"
+#include "entity.hpp"
 
 SDL_Renderer* renderer = nullptr;
 SDL_Surface* textureSurface = nullptr;
-entity initialPlayer = {LOCALPLAYER,true,480,270,16,16,0,0,480,270,16,16};
+entity initialPlayer = {PLAYER,true,true,Globals::screenWidth / 2,Globals::screenHeight / 2,16,16,0,0,Globals::screenWidth / 2,Globals::screenHeight / 2,16,16};
 void frameRender() {
     if (Globals::frameCount == 1) {
-        storeEntity(initialPlayer);
+        Entity::storeEntity(initialPlayer);
 
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
         }
-        Globals::window = SDL_CreateWindow("Experiment", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Globals::screenWidth, Globals::screenHeight, SDL_WINDOW_SHOWN);
+        Globals::window = SDL_CreateWindow("Re: Backyard Monsters", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Globals::screenWidth, Globals::screenHeight, SDL_WINDOW_SHOWN);
         SDL_SetWindowResizable(Globals::window,SDL_TRUE);
         if (Globals::window == nullptr) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
         }
         renderer = SDL_CreateRenderer(Globals::window, -1, SDL_RENDERER_ACCELERATED);
-        SDL_RenderSetLogicalSize(renderer, 960, 540);
+        SDL_RenderSetLogicalSize(renderer, 1152, 864);
         SDL_GL_SetSwapInterval(0);;
         SDL_UpdateWindowSurface(Globals::window);
 
@@ -44,12 +44,12 @@ void frameRender() {
 
             if (Globals::event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
                 Globals::isInFocus = true;
-            keyInput::detectKeyDownEvent();
-            keyInput::detectKeyUpEvent();
+            InputHandler::detectKeyDownEvent();
+            InputHandler::detectKeyUpEvent();
 
         }
          auto start = std::chrono::high_resolution_clock::now();
-        entity localPlayer = getLocalPlayer();
+        entity localPlayer = Entity::getLocalPlayer();
         //do stuff.
         SDL_SetRenderDrawColor(renderer,0,0,0,255);
         SDL_RenderClear(renderer);

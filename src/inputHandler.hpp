@@ -4,7 +4,7 @@
 #include <string>
 
 
-namespace keyInput {
+namespace InputHandler {
     inline bool isWDown = false;
     inline bool isADown = false;
     inline bool isSDown = false;
@@ -42,5 +42,15 @@ namespace keyInput {
             if (Globals::event.key.keysym.scancode == SDL_SCANCODE_SPACE)
                 isSpaceDown = false;
         }
+    }
+
+    inline std::vector<int> getMousePosition() {
+        int x, y;
+        std::vector<int> vector;
+        if(Globals::isInFocus)
+            SDL_GetMouseState(&x,&y);
+        vector.push_back(x);
+        vector.push_back(y);
+        return vector;
     }
 }
