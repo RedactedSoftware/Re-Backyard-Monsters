@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
-enum { PLAYER = 0, BUILDING = 1, MONSTER = 2};
+enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3};
 struct entity {
     int type;
     bool isLocalPlayer;

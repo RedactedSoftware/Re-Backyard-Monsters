@@ -4,24 +4,32 @@
 #include <SDL2/SDL.h>
 #include "globals.hpp"
 #include "entity.hpp"
+#include "texture.hpp"
 
-SDL_Renderer* renderer = nullptr;
+
 SDL_Surface* textureSurface = nullptr;
-entity initialPlayer = {PLAYER,true,true,Globals::screenWidth / 2,Globals::screenHeight / 2,2,2,0,0,Globals::screenWidth / 2,Globals::screenHeight / 2,2,2};
+
+
+
 void frameRender() {
     if (Globals::frameCount == 1) {
-        Entity::storeEntity(initialPlayer);
+        Entity::storeEntity(entity{PLAYER,true,true,Globals::screenWidth / 2,Globals::screenHeight / 2,4,4,0,0,Globals::screenWidth / 2,Globals::screenHeight / 2,4,4});
+        Entity::storeEntity(entity{PEBBLESHINER,false,true,0,0,64,64,0,0,0,0,64,64});
 
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
         }
-        Globals::window = SDL_CreateWindow("Re: Backyard Monsters", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Globals::screenWidth, Globals::screenHeight, SDL_WINDOW_SHOWN);
+        Globals::window = SDL_CreateWindow("Experiment", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Globals::screenWidth, Globals::screenHeight, SDL_WINDOW_SHOWN);
         SDL_SetWindowResizable(Globals::window,SDL_TRUE);
         if (Globals::window == nullptr) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
         }
-        renderer = SDL_CreateRenderer(Globals::window, -1, SDL_RENDERER_ACCELERATED);
-        SDL_RenderSetLogicalSize(renderer, 1152, 864);
+        //Initialize PNG loading
+        int imgFlags = IMG_INIT_PNG;
+        if( !( IMG_Init( imgFlags ) & imgFlags ) )
+            std::cerr << "SDL_Error: " << "Couldn't init SDL_Image." << std::endl;
+        Globals::renderer = SDL_CreateRenderer(Globals::window, -1, SDL_RENDERER_ACCELERATED);
+        SDL_RenderSetLogicalSize(Globals::renderer, 1152, 864);
         SDL_GL_SetSwapInterval(0);;
         SDL_UpdateWindowSurface(Globals::window);
 
@@ -50,19 +58,24 @@ void frameRender() {
         }
          auto start = std::chrono::high_resolution_clock::now();
         entity localPlayer = Entity::getLocalPlayer();
+        entity pebbleShiner;
+        for (int i = 0; i < Entity::entityList.size(); i++){
+            if (Entity::entityList[i].type == PEBBLESHINER) {
+                pebbleShiner = Entity::entityList[i];
+            }
+        }
         //do stuff.
-        SDL_SetRenderDrawColor(renderer,0,0,0,255);
-        SDL_RenderClear(renderer);
-        SDL_SetRenderDrawColor(renderer,255,255,255,255);
-        SDL_RenderFillRect(renderer,&localPlayer.renderedEntity);
+        SDL_SetRenderDrawColor(Globals::renderer,0,0,0,255);
+        SDL_RenderClear(Globals::renderer);
+        Texture::loadMedia();
+        SDL_SetRenderDrawColor(Globals::renderer,255,255,255,255);
+        SDL_RenderFillRect(Globals::renderer,&pebbleShiner.renderedEntity);
+        SDL_RenderCopy( Globals::renderer, Texture::pebbleShiner, NULL, &pebbleShiner.renderedEntity );
+        SDL_RenderFillRect(Globals::renderer,&localPlayer.renderedEntity);
 
 
 
-
-
-
-
-        SDL_RenderPresent(renderer);
+        SDL_RenderPresent(Globals::renderer);
         //Decrease framerate when focus is lost.
         if(!Globals::isInFocus)
             std::this_thread::sleep_for(std::chrono::microseconds((62500 - Globals::minimumFrameDelta)));
@@ -73,7 +86,7 @@ void frameRender() {
             std::this_thread::sleep_for(std::chrono::microseconds((Globals::minimumFrameDelta - (int) Globals::frameDelta)));
         Globals::frameCount = Globals::frameCount + 1;
     }
-    SDL_DestroyRenderer(renderer);
+    SDL_DestroyRenderer(Globals::renderer);
     SDL_DestroyWindow(Globals::window);
     SDL_Quit();
     exit(1);
