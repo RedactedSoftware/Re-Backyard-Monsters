@@ -7,10 +7,11 @@
 
 void frameRender() {
     if (Globals::frameCount == 1) {
-        Entity::storeEntity(entity{PLAYER,true,0,false,Globals::screenWidth / 2,Globals::screenHeight / 2,
+        Entity::storeEntity(entity{PLAYER,true,0,true,Globals::screenWidth / 2,Globals::screenHeight / 2,
                                    4,4,Globals::screenWidth / 2,Globals::screenHeight / 2,4,4});
-        Entity::storeEntity(entity{PEBBLESHINER,false,true,0,0,
-                                   64,64,0,0,0,64,64});
+
+        Entity::storeEntity(entity{PEBBLESHINER,true,1,true,0,0,
+                                   4,4,0,0,64,64});
 
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
@@ -46,22 +47,11 @@ void frameRender() {
 
         }
          auto start = std::chrono::high_resolution_clock::now();
-        entity localPlayer = Entity::getLocalPlayer();
-        entity pebbleShiner;
-        for (int i = 0; i < Entity::entityList.size(); i++){
-            if (Entity::entityList[i].type == PEBBLESHINER) {
-                pebbleShiner = Entity::entityList[i];
-            }
-        }
         //do stuff.
         Texture::loadMedia();
         SDL_SetRenderDrawColor(Renderer::renderer,0,0,0,255);
         SDL_RenderClear(Renderer::renderer);
-        SDL_SetRenderDrawColor(Renderer::renderer,255,255,255,255);
-        Entity::renderTexturedEntity(pebbleShiner);
-        SDL_RenderFillRect(Renderer::renderer,&localPlayer.renderedEntity);
-
-
+        Entity::renderEntities();
 
         SDL_RenderPresent(Renderer::renderer);
         //Decrease framerate when focus is lost.

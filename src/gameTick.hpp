@@ -10,22 +10,22 @@ void gameTick() {
         //The first tick *must* be after the first frame has completed.
         if (Globals::frameCount == 1)
             std::this_thread::sleep_for(std::chrono::milliseconds(5));
-        entity localPlayer = Entity::getLocalPlayer();
+        entity* localPlayer = Entity::getLocalPlayer();
         if (!Globals::isPaused) {
             auto start = std::chrono::high_resolution_clock::now();
             //Do stuff.
-            localPlayer.posX = InputHandler::getMousePosition()[0];
-            localPlayer.posY = InputHandler::getMousePosition()[1];
+            localPlayer->posX = InputHandler::getMousePosition()[0];
+            localPlayer->posY = InputHandler::getMousePosition()[1];
 
             //Prevent the "player" from going off the screen.
-            if(localPlayer.posY > Globals::screenHeight - localPlayer.height)
-                localPlayer.posY = Globals::screenHeight - localPlayer.height;
-            if(localPlayer.posY < 0)
-                localPlayer.posY = 0;
-            if(localPlayer.posX > Globals::screenWidth - localPlayer.width)
-                localPlayer.posX = Globals::screenWidth - localPlayer.width;
-            if(localPlayer.height < 0)
-                localPlayer.height = 0;
+            if(localPlayer->posY > Globals::screenHeight - localPlayer->height)
+                localPlayer->posY = Globals::screenHeight - localPlayer->height;
+            if(localPlayer->posY < 0)
+                localPlayer->posY = 0;
+            if(localPlayer->posX > Globals::screenWidth - localPlayer->width)
+                localPlayer->posX = Globals::screenWidth - localPlayer->width;
+            if(localPlayer->height < 0)
+                localPlayer->height = 0;
 
 
             //execute once per second
@@ -37,11 +37,12 @@ void gameTick() {
             }
 
             //TODO assign this in the frameRender thread right before drawing so we can interpolate it.
-            localPlayer.renderedEntity.x = localPlayer.posX;
-            localPlayer.renderedEntity.y = localPlayer.posY;
-            localPlayer.renderedEntity.w = localPlayer.width;
-            localPlayer.renderedEntity.h = localPlayer.height;
-            Entity::setLocalPlayer(localPlayer);
+            //TODO There's some kind of desync stale-reference memory error.
+            localPlayer->renderedEntity.x = localPlayer->posX;
+            localPlayer->renderedEntity.y = localPlayer->posY;
+            localPlayer->renderedEntity.w = localPlayer->width;
+            localPlayer->renderedEntity.h = localPlayer->height;
+            Entity::setLocalPlayer(*localPlayer);
             Globals::tickCount = Globals::tickCount + 1;
             auto stop = std::chrono::high_resolution_clock::now();
             //limit to 64 ticks per second.

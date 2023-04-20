@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "globals.hpp"
 #include "renderer.hpp"
 enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3};
@@ -21,10 +22,10 @@ namespace Entity {
     void storeEntity(entity e) {
         entityList.push_back(e);
     }
-    entity getLocalPlayer() {
+    entity* getLocalPlayer() {
         for (int i = 0; i < entityList.size(); i++){
             if (entityList[i].type == PLAYER && entityList[i].isLocalPlayer)
-                return entityList[i];
+                return &entityList[i];
         }
     }
 
@@ -41,9 +42,22 @@ namespace Entity {
             }
         }
     }
+    bool compareByHeight(const entity &x, const entity &y)
+    {
+        return x.posY < y.posY;
+    }
+    //Render entities in order of type and Y position.
+    inline void renderEntities() {
+        std::sort(Entity::entityList.begin(), Entity::entityList.end(), compareByHeight);
+        std::reverse(Entity::entityList.begin(),Entity::entityList.end());
+        for (int i = 0; i < Entity::entityList.size(); i++){
+            if(Entity::entityList[i].draw) {
 
-    inline void renderTexturedEntity(entity e) {
-        SDL_RenderFillRect(Renderer::renderer,&e.renderedEntity);
-        SDL_RenderCopy( Renderer::renderer, e.renderedTexture, NULL, &e.renderedEntity);
+                    SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
+                    SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
+                                   &Entity::entityList[i].renderedEntity);
+
+            }
+        }
     }
 }
