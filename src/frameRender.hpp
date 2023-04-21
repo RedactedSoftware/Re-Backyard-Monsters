@@ -12,6 +12,9 @@ void frameRender() {
 
         Entity::storeEntity(entity{PEBBLESHINER,false,1,true,0,0,
                                    64,64,0,0,64,64});
+        Entity::storeEntity(entity{PEBBLESHINER,false,2,true,64,0,
+                                   64,64,64,0,64,64});
+
         Menu::storeMenuObject(MenuObject{false,BACKGROUND,0,0,0,64,48});
 
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -43,9 +46,8 @@ void frameRender() {
 
             if (Globals::event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
                 Globals::isInFocus = true;
-            InputHandler::detectKeyDownEvent();
-            InputHandler::detectKeyUpEvent();
-
+            InputHandler::detectMouseDownEvent();
+            InputHandler::detectMouseUpEvent();
         }
          auto start = std::chrono::high_resolution_clock::now();
         //do stuff.

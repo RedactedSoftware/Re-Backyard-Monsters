@@ -1,8 +1,8 @@
+#pragma once
 #include <SDL2/SDL.h>
-#include "globals.hpp"
 #include <vector>
 #include <string>
-
+#include "globals.hpp"
 
 namespace InputHandler {
     inline bool isWDown = false;
@@ -10,42 +10,10 @@ namespace InputHandler {
     inline bool isSDown = false;
     inline bool isDDown = false;
     inline bool isSpaceDown = false;
-
-    inline void detectKeyDownEvent() {
-        if (Globals::event.type == SDL_KEYDOWN) {
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-                Globals::shouldQuit = true;
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_INSERT)
-                Globals::isPaused = !Globals::isPaused;
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_W)
-                isWDown = true;
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_A)
-                isADown = true;
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_S)
-                isSDown = true;
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_D)
-                isDDown = true;
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_SPACE)
-                isSpaceDown = true;
-        }
-    }
-    inline void detectKeyUpEvent() {
-        if (Globals::event.type == SDL_KEYUP) {
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_W)
-                isWDown = false;
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_A)
-                isADown = false;
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_S)
-                isSDown = false;
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_D)
-                isDDown = false;
-            if (Globals::event.key.keysym.scancode == SDL_SCANCODE_SPACE)
-                isSpaceDown = false;
-        }
-    }
+    inline bool isMouse1Down = false;
 
     inline std::vector<int> getMousePosition() {
-        //TODO Make this function as expected if the window has been resized.
+        //TODO Make this function work as expected if the window has been resized.
         int x, y;
         std::vector<int> vector;
         if(Globals::isInFocus)
@@ -54,4 +22,16 @@ namespace InputHandler {
         vector.push_back(y);
         return vector;
     }
+
+    inline void detectMouseDownEvent() {
+        if (Globals::event.type == SDL_MOUSEBUTTONDOWN)
+            isMouse1Down = true;
+
+    }
+    inline void detectMouseUpEvent() {
+        if(Globals::event.type == SDL_MOUSEBUTTONUP)
+            isMouse1Down = false;
+
+    }
+
 }

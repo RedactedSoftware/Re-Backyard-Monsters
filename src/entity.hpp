@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "globals.hpp"
 #include "renderer.hpp"
+#include "inputHandler.hpp"
 
 //entity types.
 enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, ERRORENTITY = -247};
@@ -21,7 +22,7 @@ struct entity {
 
 namespace Entity {
     inline std::vector<entity> entityList;
-    inline entity ErrorEntity = {ERRORENTITY};
+    inline entity ErrorEntity = {ERRORENTITY,0,-247,false};
 
     inline void storeEntity(entity e) {
         entityList.push_back(e);
@@ -48,6 +49,14 @@ namespace Entity {
         }
         return &Entity::ErrorEntity;
     }
+
+    inline entity* getEntityByClick() {
+        if (InputHandler::isMouse1Down) {
+            return getEntityByIntersection();
+        }
+        return &Entity::ErrorEntity;
+    }
+
     inline void setLocalPlayer(entity e) {
         for (int i = 0; i < entityList.size(); i++){
             if (entityList[i].type == PLAYER && entityList[i].isLocalPlayer)
@@ -67,17 +76,21 @@ namespace Entity {
     }
 
     //Render entities in order Y position.
-    //TODO always render local player last.
     inline void renderEntities() {
         std::sort(Entity::entityList.begin(), Entity::entityList.end(), compareByHeight);
         std::reverse(Entity::entityList.begin(),Entity::entityList.end());
         for (int i = 0; i < Entity::entityList.size(); i++){
-            if(Entity::entityList[i].draw) {
+            if(Entity::entityList[i].draw && !Entity::entityList[i].isLocalPlayer) {
                 SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
                     SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
                                    &Entity::entityList[i].renderedEntity);
 
             }
+            //Always render the localPlayer last.
+            SDL_RenderFillRect(Renderer::renderer,&Entity::getLocalPlayer()->renderedEntity);
+            SDL_RenderCopy(Renderer::renderer, Entity::getLocalPlayer()->renderedTexture, NULL,
+                           &Entity::getLocalPlayer()->renderedEntity);
+
         }
     }
 }

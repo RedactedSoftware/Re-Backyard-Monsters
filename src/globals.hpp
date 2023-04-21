@@ -1,7 +1,5 @@
 #pragma once
 #include <SDL2/SDL.h>
-#include "entity.hpp"
-#include "gameState.hpp"
 
 namespace Globals {
     inline const int screenWidth = 1152;
@@ -10,8 +8,8 @@ namespace Globals {
     inline float frameDelta = 0;
     inline int frameCount = 1;
     inline SDL_Window *window = nullptr;
-    inline SDL_Event event;
     inline bool shouldQuit = false;
+    inline SDL_Event event;
     inline bool isPaused = false;
     inline int tickCount = 1;
     inline int minimumTickDelta = 15625; // 64 tick.
