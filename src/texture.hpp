@@ -3,8 +3,8 @@
 #include <SDL2/SDL_image.h>
 #include <string>
 #include "globals.hpp"
-#include "texture.hpp"
 #include "renderer.hpp"
+#include "menu.hpp"
 namespace Texture {
     inline SDL_Texture* loadTexture(std::string path) {
         //The final texture
@@ -22,6 +22,7 @@ namespace Texture {
 
     void loadMedia() {
         Entity::storeEntityTexture(loadTexture("../resources/missingTexture.png"), PEBBLESHINER);
+        Menu::storeMenuTexture(loadTexture("../resources/menuBackground.png"),BACKGROUND);
 
     }
 

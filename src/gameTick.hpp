@@ -34,6 +34,8 @@ void gameTick() {
                 << ((Globals::minimumTickDelta - Globals::tickDelta) / 1000) << "ms." << std::endl;
                     std::cout << "Last frame rendered in: " << (Globals::frameDelta / 1000) << "ms." << std::endl;
                     std::cout << Globals::frameCount << " frames have elapsed." << std::endl;
+                    std::cout << Entity::getEntityByIntersection()->type << std::endl;
+                    std::cout << Entity::getEntityByID(1)->type << std::endl;
             }
 
             //TODO assign this in the frameRender thread right before drawing so we can interpolate it.

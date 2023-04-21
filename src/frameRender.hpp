@@ -10,8 +10,9 @@ void frameRender() {
         Entity::storeEntity(entity{PLAYER,true,0,true,Globals::screenWidth / 2,Globals::screenHeight / 2,
                                    4,4,Globals::screenWidth / 2,Globals::screenHeight / 2,4,4});
 
-        Entity::storeEntity(entity{PEBBLESHINER,true,1,true,0,0,
-                                   4,4,0,0,64,64});
+        Entity::storeEntity(entity{PEBBLESHINER,false,1,true,0,0,
+                                   64,64,0,0,64,64});
+        Menu::storeMenuObject(MenuObject{false,BACKGROUND,0,0,0,64,48});
 
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
