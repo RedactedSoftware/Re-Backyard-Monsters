@@ -5,11 +5,6 @@
 #include "globals.hpp"
 
 namespace InputHandler {
-    inline bool isWDown = false;
-    inline bool isADown = false;
-    inline bool isSDown = false;
-    inline bool isDDown = false;
-    inline bool isSpaceDown = false;
     inline bool isMouse1Down = false;
 
     inline std::vector<int> getMousePosition() {
