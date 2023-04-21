@@ -7,7 +7,7 @@
 #include "renderer.hpp"
 
 //entity types.
-enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3};
+enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, ERRORENTITY = -247};
 struct entity {
     int type;
     bool isLocalPlayer;
@@ -18,8 +18,10 @@ struct entity {
     SDL_Texture* renderedTexture;
 };
 
+
 namespace Entity {
     inline std::vector<entity> entityList;
+    inline entity ErrorEntity = {ERRORENTITY};
 
     inline void storeEntity(entity e) {
         entityList.push_back(e);
@@ -44,7 +46,7 @@ namespace Entity {
                     return &entityList[i];
             }
         }
-        return Entity::getLocalPlayer();
+        return &Entity::ErrorEntity;
     }
     inline void setLocalPlayer(entity e) {
         for (int i = 0; i < entityList.size(); i++){
@@ -64,7 +66,8 @@ namespace Entity {
         return x.posY < y.posY;
     }
 
-    //Render entities in order of type and Y position.
+    //Render entities in order Y position.
+    //TODO always render local player last.
     inline void renderEntities() {
         std::sort(Entity::entityList.begin(), Entity::entityList.end(), compareByHeight);
         std::reverse(Entity::entityList.begin(),Entity::entityList.end());

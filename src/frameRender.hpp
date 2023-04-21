@@ -17,7 +17,7 @@ void frameRender() {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
         }
-        Globals::window = SDL_CreateWindow("Experiment", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Globals::screenWidth, Globals::screenHeight, SDL_WINDOW_SHOWN);
+        Globals::window = SDL_CreateWindow("Re: Backyard Monsters", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Globals::screenWidth, Globals::screenHeight, SDL_WINDOW_SHOWN);
         SDL_SetWindowResizable(Globals::window,SDL_TRUE);
         if (Globals::window == nullptr) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;

@@ -9,6 +9,7 @@ void gameTick() {
     while (true) {
         //The first tick *must* be after the first frame has completed.
         if (Globals::frameCount == 1)
+            //TODO Do this a different way, Checking if framecount 2 doesn't work and this is a total hack.
             std::this_thread::sleep_for(std::chrono::milliseconds(5));
         entity localPlayer = *Entity::getLocalPlayer();
         if (!Globals::isPaused) {
@@ -35,7 +36,6 @@ void gameTick() {
                     std::cout << "Last frame rendered in: " << (Globals::frameDelta / 1000) << "ms." << std::endl;
                     std::cout << Globals::frameCount << " frames have elapsed." << std::endl;
                     std::cout << Entity::getEntityByIntersection()->type << std::endl;
-                    std::cout << Entity::getEntityByID(1)->type << std::endl;
             }
 
             //TODO assign this in the frameRender thread right before drawing so we can interpolate it.
