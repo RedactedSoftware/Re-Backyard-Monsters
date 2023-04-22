@@ -12,8 +12,9 @@ void frameRender() {
 
         Entity::storeEntity(entity{PEBBLESHINER,false,1,true,0,0,
                                    64,64,0,0,64,64});
-        Entity::storeEntity(entity{PEBBLESHINER,false,2,true,64,0,
-                                   64,64,64,0,64,64});
+
+        Entity::storeEntity(entity{PEBBLESHINER,false,2,true,0,32,
+                                   64,64,0,32,64,64});
 
         Menu::storeMenuObject(MenuObject{false,BACKGROUND,0,0,0,64,48});
 

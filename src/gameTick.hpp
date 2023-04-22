@@ -35,9 +35,9 @@ void gameTick() {
                 << ((Globals::minimumTickDelta - Globals::tickDelta) / 1000) << "ms." << std::endl;
                     std::cout << "Last frame rendered in: " << (Globals::frameDelta / 1000) << "ms." << std::endl;
                     std::cout << Globals::frameCount << " frames have elapsed." << std::endl;
-                    if(Entity::getEntityByClick()->type != ERRORENTITY)
-                        std::cout << Entity::getEntityByClick()->type << std::endl;
             }
+            if(Entity::getEntityByClick()->type != ERRORENTITY)
+                std::cout << Entity::getEntityByClick()->entityID << std::endl;
 
             //TODO assign this in the frameRender thread right before drawing so we can interpolate it.
             localPlayer.renderedEntity.x = localPlayer.posX;

@@ -40,14 +40,27 @@ namespace Entity {
                 return &entityList[i];
         }
     }
+    inline bool compareByHeight(const entity &x, const entity &y)
+    {
+        return x.posY < y.posY;
+    }
+
+    //TODO This is the biggest hack I've ever made.
+    //Return the entity the player is intersecting with which has the lowest Y coordinate.
     inline entity* getEntityByIntersection() {
+        std::vector<entity> intersectionVector;
         for (int i = 0; i < entityList.size(); i++){
             if (SDL_HasIntersection(&Entity::getLocalPlayer()->renderedEntity, &entityList[i].renderedEntity) == SDL_TRUE) {
-                if(!Entity::entityList[i].isLocalPlayer)
-                    return &entityList[i];
+                if(!Entity::entityList[i].isLocalPlayer) {
+                    intersectionVector.push_back(Entity::entityList[i]);
+                    std::sort(intersectionVector.begin(), intersectionVector.end(), compareByHeight);
+                }
             }
         }
-        return &Entity::ErrorEntity;
+        if (intersectionVector.size() == 0)
+            return &Entity::ErrorEntity;
+        std::reverse(intersectionVector.begin(),intersectionVector.end());
+        return Entity::getEntityByID(intersectionVector[0].entityID);
     }
 
     inline entity* getEntityByClick() {
@@ -70,15 +83,10 @@ namespace Entity {
             }
         }
     }
-    inline bool compareByHeight(const entity &x, const entity &y)
-    {
-        return x.posY < y.posY;
-    }
 
     //Render entities in order Y position.
     inline void renderEntities() {
         std::sort(Entity::entityList.begin(), Entity::entityList.end(), compareByHeight);
-        std::reverse(Entity::entityList.begin(),Entity::entityList.end());
         for (int i = 0; i < Entity::entityList.size(); i++){
             if(Entity::entityList[i].draw && !Entity::entityList[i].isLocalPlayer) {
                 SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
