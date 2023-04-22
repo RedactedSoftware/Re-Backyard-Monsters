@@ -1,5 +1,6 @@
-#include "gameTick.hpp"
-#include "frameRender.hpp"
+#include <gameTick.hpp>
+#include <frameRender.hpp>
+
 int main() {
     //init code here
     std::thread frameRenderThread (frameRender);

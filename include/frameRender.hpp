@@ -2,8 +2,9 @@
 #include <thread>
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "entity.hpp"
-#include "texture.hpp"
+
+#include <entity.hpp>
+#include <texture.hpp>
 
 void frameRender() {
     if (Globals::frameCount == 1) {

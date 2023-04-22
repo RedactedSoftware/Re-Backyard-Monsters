@@ -1,9 +1,11 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
-#include "globals.hpp"
-#include "inputHandler.hpp"
-#include "entity.hpp"
+
+#include <globals.hpp>
+#include <inputHandler.hpp>
+#include <entity.hpp>
+
 
 void gameTick() {
     while (true) {

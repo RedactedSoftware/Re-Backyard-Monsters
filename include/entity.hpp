@@ -3,10 +3,12 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include "globals.hpp"
-#include "renderer.hpp"
-#include "inputHandler.hpp"
-#include "texture.hpp"
+
+#include <globals.hpp>
+#include <renderer.hpp>
+#include <inputHandler.hpp>
+#include <texture.hpp>
+#include <Vector2.hpp>
 
 //entity types.
 enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, ERRORENTITY = -247};
@@ -20,9 +22,28 @@ struct entity {
     SDL_Texture* renderedTexture;
 };
 
+namespace ReBackyardMonsters {
 
-namespace Entity {
-    inline std::vector<entity> entityList;
+    class Entity {
+        Vector2 Position;
+        Vector2 PrevPosition;
+        Vector2 NextPosition;
+        Vector2 Velocity;
+        Vector2 BoundingBox;
+    };
+    class PlayerEntity : public Entity { };
+    class LocalPlayerEntity : public PlayerEntity { };
+
+    typedef uint64_t UUID;
+    class GameScene
+    {
+        std::vector<Entity> Entities;
+    public:
+        void AddEntity(Entity& e);
+        Entity GetEntityByUUID(UUID id);
+    };
+
+    //inline std::vector<entity> entityList;
     inline entity ErrorEntity = {ERRORENTITY,0,-247,false};
 
     inline void storeEntity(entity e) {
