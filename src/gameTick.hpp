@@ -10,7 +10,7 @@ void gameTick() {
         //The first tick *must* be after the first frame has completed.
         if (Globals::frameCount == 1)
             //TODO Do this a different way, Checking if framecount 2 doesn't work and this is a total hack.
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            std::this_thread::sleep_for(std::chrono::milliseconds(25));
         entity localPlayer = *Entity::getLocalPlayer();
         if (!Globals::isPaused) {
             auto start = std::chrono::high_resolution_clock::now();

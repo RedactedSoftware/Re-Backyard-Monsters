@@ -17,7 +17,6 @@ void frameRender() {
                                    64,64,0,32,64,64});
 
         Menu::storeMenuObject(MenuObject{false,BACKGROUND,0,0,0,64,48});
-
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
         }
@@ -35,7 +34,9 @@ void frameRender() {
         SDL_GL_SetSwapInterval(0);;
         SDL_UpdateWindowSurface(Globals::window);
 
-        //absolute path for debugging purposes.
+        Texture::loadMedia();
+        //This will end up needing to be moved later on.
+        Entity::storeEntityTextures();
     }
     while (!Globals::shouldQuit) {
         while (SDL_PollEvent(&Globals::event)) {
@@ -52,7 +53,6 @@ void frameRender() {
         }
          auto start = std::chrono::high_resolution_clock::now();
         //do stuff.
-        Texture::loadMedia();
         SDL_SetRenderDrawColor(Renderer::renderer,0,0,0,255);
         SDL_RenderClear(Renderer::renderer);
         SDL_SetRenderDrawColor(Renderer::renderer,255,255,255,255);

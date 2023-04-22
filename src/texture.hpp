@@ -20,9 +20,11 @@ namespace Texture {
         return newTexture;
     }
 
+    inline SDL_Texture* pebbleShinerTexture;
+
     void loadMedia() {
-        Entity::storeEntityTexture(loadTexture("../resources/missingTexture.png"), PEBBLESHINER);
-        Menu::storeMenuTexture(loadTexture("../resources/menuBackground.png"),BACKGROUND);
+        Texture::pebbleShinerTexture = loadTexture("../resources/missingTexture.png");
+        //Menu::storeMenuTexture(loadTexture("../resources/menuBackground.png"),BACKGROUND);
 
     }
 

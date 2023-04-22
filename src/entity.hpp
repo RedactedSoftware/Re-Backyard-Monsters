@@ -6,6 +6,7 @@
 #include "globals.hpp"
 #include "renderer.hpp"
 #include "inputHandler.hpp"
+#include "texture.hpp"
 
 //entity types.
 enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, ERRORENTITY = -247};
@@ -76,10 +77,10 @@ namespace Entity {
                 entityList[i] = e;
         }
     }
-    inline void storeEntityTexture(SDL_Texture* texture, int type) {
+    inline void storeEntityTextures() {
         for (int i = 0; i < Entity::entityList.size(); i++){
-            if (Entity::entityList[i].type == type) {
-                Entity::entityList[i].renderedTexture = texture;
+            if (Entity::entityList[i].type == PEBBLESHINER) {
+                Entity::entityList[i].renderedTexture = Texture::pebbleShinerTexture;
             }
         }
     }
@@ -96,9 +97,6 @@ namespace Entity {
             }
             //Always render the localPlayer last.
             SDL_RenderFillRect(Renderer::renderer,&Entity::getLocalPlayer()->renderedEntity);
-            SDL_RenderCopy(Renderer::renderer, Entity::getLocalPlayer()->renderedTexture, NULL,
-                           &Entity::getLocalPlayer()->renderedEntity);
-
         }
     }
 }
