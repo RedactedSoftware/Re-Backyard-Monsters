@@ -5,6 +5,8 @@
 
 namespace ReBackyardMonsters
 {
+    constexpr float VectorEqualityMarginOfError = 0.000001f;
+
     inline Vector2::Vector2()
     {
         this->X = 0;
@@ -19,44 +21,46 @@ namespace ReBackyardMonsters
 
     Vector2 Vector2::Max(const Vector2& max) { }
     Vector2 Vector2::Min(const Vector2& max) { }
-    Vector2 Vector2::Normal() { }
+    inline Vector2 Vector2::Normalize() const {
+        return (1.f /(Magnitude(*this))) * (*this);
+    }
     Vector2 Vector2::Floor() { }
     Vector2 Vector2::Ceil() { }
+    // Returns perpendicular Vector2
+    Vector2 Vector2::Perp() const { return Vector2(-this->Y, this->X); }
 
-    Vector2 Vector2::Clamp(const Vector2& min, const Vector2& max)
+    inline Vector2 Vector2::Clamp(Vector2 const&min, Vector2 const&max)
     {
 
     }
-    inline Vector2 Vector2::Lerp(Vector2& goal, float alpha) const
-    {
+
+    inline Vector2 Vector2::Lerp(Vector2& goal, float alpha) const {
+        return this->operator*(1.0f-alpha) + (goal*alpha);
+    }
+    inline Vector2 Vector2::Lerp(Vector2 const&start, Vector2 const&goal, float alpha)  {
 
     }
-    inline Vector2 const Vector2::Lerp(Vector2 const&start, Vector2 const&goal, float alpha) const {
-
-    }
-    inline float Vector2::Dot(Vector2 const&against) {
+    inline float Vector2::Dot(Vector2 const&against) const {
         return this->X*against.X+this->Y*against.Y;
     }
-    inline const float Vector2::Dot(Vector2 const&lhs, Vector2 const&rhs) {
+    inline float Vector2::Dot(Vector2 const&lhs, Vector2 const&rhs) {
         return lhs.X*rhs.X+lhs.Y*rhs.Y;
     }
-    inline float Vector2::Magnitude()  {
+    inline float Vector2::Magnitude() const  {
         return sqrt(this->Dot(*this));
     }
-    inline const float Vector2::Magnitude(Vector2 const&lhs) {
-        return sqrt(Dot(lhs, lhs));
-    }
-    float Vector2::Distance(const Vector2& to) const
-    {
 
+    inline float Vector2::Distance(const Vector2& to) const {
+        double xsep = Y-to.Y;
+        double ysep = X-to.X;
+        return sqrt(ysep*ysep + xsep*xsep);
     }
-    bool Vector2::operator==(const Vector2& rhs) const
-    {
 
+    inline bool Vector2::operator==(const Vector2& rhs) const {
+        return ((X*rhs.X<VectorEqualityMarginOfError)&&(Y * rhs.Y < VectorEqualityMarginOfError));
     }
-    bool Vector2::operator!=(const Vector2& rhs) const
-    {
-
+    inline bool Vector2::operator!=(const Vector2& rhs) const {
+        return (X != rhs.X) || (Y != rhs.Y);
     }
     inline Vector2 Vector2::operator+(const Vector2& rhs) const
     {
@@ -74,64 +78,54 @@ namespace ReBackyardMonsters
     {
         return Vector2(this->X / rhs.X, this->Y / rhs.Y);
     }
-    Vector2 Vector2::operator/(float rhs) const
-    {
-
+    Vector2 Vector2::operator/(float rhs) const {
+        return Vector2(this->X / rhs, this->Y / rhs);
     }
-
-    Vector2 Vector2::operator*(float rhs) const
-    {
-
+    Vector2 Vector2::operator*(float rhs) const {
+        return Vector2(this->X * rhs, this->Y * rhs);
     }
-    // Fast Static members
     const Vector2 Vector2::Zero = Vector2(0,0);
     const Vector2 Vector2::One = Vector2(1, 1);
 
-    inline const Vector2 operator-(Vector2 const&lhs, Vector2 const&rhs) {
+    inline std::ostream& operator<<(std::ostream& os, const Vector2& vector)
+    {
+        std::stringstream stream;
+        stream << "{X: " << vector.X << ", Y: " << vector.Y;
+        os.write(const_cast<char*>(stream.str().c_str()), static_cast<std::streamsize>(stream.str().size() * sizeof(char)));
+        return os;
+    }
+
+    // Static Class Methods
+    inline Vector2 operator-(Vector2 const&lhs, Vector2 const&rhs) {
         return Vector2(lhs.X-rhs.X, lhs.Y-rhs.Y);
     }
-    inline const Vector2 operator+(Vector2 const&lhs, Vector2 const&rhs) {
+    inline  Vector2 operator+(Vector2 const&lhs, Vector2 const&rhs) {
         return Vector2(lhs.X+rhs.X, lhs.Y + rhs.Y);
     }
-    inline const Vector2 operator/(Vector2 const&lhs, float const&rhs) {
+    inline  Vector2 operator/(Vector2 const&lhs, float const&rhs) {
         return Vector2(lhs.X/rhs, lhs.Y/rhs);
     }
-    inline const Vector2 operator*(float lhs, Vector2 const &rhs) {
+    inline Vector2 operator*(float lhs, Vector2 const &rhs) {
         return Vector2(rhs.X * lhs, rhs.Y * lhs);
     }
-    inline const Vector2& operator-=(Vector2 &lhs, const Vector2 &rhs) {
-        lhs.X-=rhs.X;
-        lhs.Y-=rhs.Y;
-        return lhs;
-    }
-    inline const Vector2& operator+=(Vector2 &lhs, const Vector2 &rhs) {
-        lhs.X+=rhs.X;
-        lhs.Y+=rhs.Y;
-        return lhs;
-    }
-    inline const Vector2& operator/=(Vector2 &lhs, const Vector2& rhs) {
-        lhs.X/=rhs.X;
-        lhs.Y/=rhs.Y;
-        return lhs;
-    }
-    inline const Vector2& operator*=(Vector2 &lhs, const Vector2 &rhs) {
-        lhs.X*=rhs.X;
-        lhs.Y*=rhs.Y;
-        return lhs;
-    }
-    inline const Vector2& operator*=(Vector2 &lhs, const float &rhs)
-    {
-        lhs.X*=rhs;
-        lhs.Y*=rhs;
-        return lhs;
-    }
-    inline const bool operator!=(Vector2 const&lhs, Vector2 const&rhs) {
+    inline bool operator!=(Vector2 const&lhs, Vector2 const&rhs) {
         return (lhs.X !=rhs.X) || (lhs.Y != rhs.Y);
     }
-    constexpr float VectorEqualityMarginOfError = 0.000001f;
-    inline const bool operator==(Vector2 const&lhs, Vector2 const&rhs) {
+
+    inline  bool operator==(Vector2 const&lhs, Vector2 const&rhs) {
         return ((lhs.X*rhs.X<VectorEqualityMarginOfError)&&(lhs.Y * rhs.Y < VectorEqualityMarginOfError));
     }
+    inline Vector2 Vector2::Perp(Vector2 const&rhs) { return Vector2(-rhs.Y, rhs.X);}
+    inline float Vector2::Distance(Vector2 const&lhs, Vector2 const&rhs)
+    {
+        double xsep = lhs.Y-rhs.Y;
+        double ysep = lhs.X-rhs.X;
+        return sqrt(ysep*ysep + xsep*xsep);
+    }
+    inline float Vector2::Magnitude(Vector2 const&lhs) {
+        return sqrt(Dot(lhs, lhs));
+    }
+    inline Vector2 Vector2::Clamp(const Vector2& input, const Vector2& min, const Vector2& max) {
 
-
+    }
 }
