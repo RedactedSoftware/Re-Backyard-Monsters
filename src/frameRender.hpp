@@ -38,6 +38,7 @@ void frameRender() {
 
         Texture::loadMedia();
         //This will end up needing to be moved later on.
+        Entity::storeEntityTextures();
     }
     while (!Globals::shouldQuit) {
         while (SDL_PollEvent(&Globals::event)) {
@@ -53,8 +54,6 @@ void frameRender() {
             InputHandler::detectMouseUpEvent();
         }
          auto start = std::chrono::high_resolution_clock::now();
-        if(Globals::tickCount %16 == 0)
-            Entity::storeEntityTextures();
         //do stuff.
         SDL_SetRenderDrawColor(Renderer::renderer,0,0,0,255);
         SDL_RenderClear(Renderer::renderer);
