@@ -22,6 +22,8 @@ struct entity {
     SDL_Texture* renderedTexture;
 };
 
+typedef uint64_t UUID;
+
 namespace ReBackyardMonsters {
 
     class Entity {
@@ -30,18 +32,20 @@ namespace ReBackyardMonsters {
         Vector2 NextPosition;
         Vector2 Velocity;
         Vector2 BoundingBox;
+        UUID EntityID;
+    public:
+        UUID GetUUID();
     };
     class PlayerEntity : public Entity { };
     class LocalPlayerEntity : public PlayerEntity { };
+    class TownHall : public Entity { };
+    class PebbleShiner : public Entity { };
+    class ErrorEntity : public Entity {
 
-    typedef uint64_t UUID;
-    class GameScene
-    {
-        std::vector<Entity> Entities;
-    public:
-        void AddEntity(Entity& e);
-        Entity GetEntityByUUID(UUID id);
     };
+
+
+
 
     //inline std::vector<entity> entityList;
     inline entity ErrorEntity = {ERRORENTITY,0,-247,false};
