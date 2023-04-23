@@ -16,7 +16,9 @@ namespace ReBackyardMonsters
         static float Magnitude(Vector2 const&vec);
         static float Distance(Vector2 const&, Vector2 const&);
 
-        friend std::ostream& operator<< (std::ostream ofs, const Vector2& vector);
+        friend Vector2 operator*(float t, Vector2 const&rhs);
+
+        friend std::ostream& operator<< (std::ostream& os, const Vector2& vector);
 
         Vector2();
         Vector2(float const& x, float const& y);
@@ -25,11 +27,11 @@ namespace ReBackyardMonsters
         float GetX() const { return this->X; }
         float GetY() const { return this->Y; }
 
-        Vector2 Max(const Vector2& max);
-        Vector2 Min(const Vector2& min);
+        Vector2 Max(const Vector2& max) const;
+        Vector2 Min(const Vector2& min) const;
         Vector2 Normalize() const;
-        Vector2 Floor();
-        Vector2 Ceil();
+        Vector2 Floor() const;
+        Vector2 Ceil() const;
         Vector2 Perp() const;
         Vector2 Clamp(Vector2 const& min, Vector2 const& max);
         Vector2 Lerp(Vector2& goal, float alpha) const;
