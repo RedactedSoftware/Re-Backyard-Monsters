@@ -7,15 +7,15 @@
 
 void frameRender() {
     if (Globals::frameCount == 1) {
-        Entity::storeEntity(entity{YARD,false,0,true,Globals::screenWidth,0,
+        Entity::storeEntity(entity{YARD,0,true,false,0,Globals::screenWidth,0,
                                    Globals::screenWidth,Globals::screenHeight,0,0,Globals::screenWidth,Globals::screenHeight});
-        Entity::storeEntity(entity{PLAYER,true,1,true,Globals::screenWidth,Globals::screenHeight,
+        Entity::storeEntity(entity{PLAYER,1,true,false,0,Globals::screenWidth,Globals::screenHeight,
                                    4,4,Globals::screenWidth,Globals::screenHeight,4,4});
 
-        Entity::storeEntity(entity{PEBBLESHINER,false,2,true,0,0,
+        Entity::storeEntity(entity{PEBBLESHINER,2,true,true,0,0,0,
                                    64,64,0,0,64,64});
 
-        Entity::storeEntity(entity{PEBBLESHINER,false,3,true,0,32,
+        Entity::storeEntity(entity{PEBBLESHINER,3,true,true,0,0,32,
                                    64,64,0,32,64,64});
 
         Menu::storeMenuObject(MenuObject{false,BACKGROUND,4,0,0,64,48});
@@ -38,7 +38,6 @@ void frameRender() {
 
         Texture::loadMedia();
         //This will end up needing to be moved later on.
-        Entity::storeEntityTextures();
     }
     while (!Globals::shouldQuit) {
         while (SDL_PollEvent(&Globals::event)) {
@@ -54,6 +53,8 @@ void frameRender() {
             InputHandler::detectMouseUpEvent();
         }
          auto start = std::chrono::high_resolution_clock::now();
+        if(Globals::tickCount %16 == 0)
+            Entity::storeEntityTextures();
         //do stuff.
         SDL_SetRenderDrawColor(Renderer::renderer,0,0,0,255);
         SDL_RenderClear(Renderer::renderer);

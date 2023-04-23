@@ -12,10 +12,10 @@
 enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, ERRORENTITY = -247, YARD = 4};
 struct entity {
     int type;
-    bool isLocalPlayer;
     int entityID;
     bool draw;
-    //bool animActive;
+    bool doAnim;
+    int animState;
     int posX, posY, width, height;
     SDL_Rect renderedEntity;
     SDL_Texture* renderedTexture;
@@ -24,7 +24,7 @@ struct entity {
 
 namespace Entity {
     inline std::vector<entity> entityList;
-    inline entity ErrorEntity = {ERRORENTITY,0,-247,false};
+    inline entity ErrorEntity = {ERRORENTITY,-247,false};
 
     inline void storeEntity(entity e) {
         entityList.push_back(e);
@@ -38,7 +38,7 @@ namespace Entity {
     }
     inline entity* getLocalPlayer() {
         for (int i = 0; i < entityList.size(); i++){
-            if (entityList[i].type == PLAYER && entityList[i].isLocalPlayer)
+            if (entityList[i].type == PLAYER && entityList[i].type == PLAYER)
                 return &entityList[i];
         }
     }
@@ -53,7 +53,7 @@ namespace Entity {
         std::vector<entity> intersectionVector;
         for (int i = 0; i < entityList.size(); i++){
             if (SDL_HasIntersection(&Entity::getLocalPlayer()->renderedEntity, &entityList[i].renderedEntity) == SDL_TRUE) {
-                if(!Entity::entityList[i].isLocalPlayer) {
+                if(!Entity::entityList[i].type == PLAYER) {
                     intersectionVector.push_back(Entity::entityList[i]);
                     std::sort(intersectionVector.begin(), intersectionVector.end(), compareByHeight);
                 }
@@ -74,33 +74,39 @@ namespace Entity {
 
     inline void setLocalPlayer(entity e) {
         for (int i = 0; i < entityList.size(); i++){
-            if (entityList[i].type == PLAYER && entityList[i].isLocalPlayer)
+            if (entityList[i].type == PLAYER && entityList[i].type == PLAYER)
                 entityList[i] = e;
         }
     }
     inline void storeEntityTextures() {
         for (int i = 0; i < Entity::entityList.size(); i++){
-            if (Entity::entityList[i].type == PEBBLESHINER)
-                Entity::entityList[i].renderedTexture = Texture::pebbleShinerTexture;
-
+            if (Entity::entityList[i].type == PEBBLESHINER) {
+                if (entityList[i].doAnim) {
+                    entityList[i].animState++;
+                    if (entityList[i].animState > 25)
+                        entityList[i].animState = 0;
+                    Entity::entityList[i].renderedTexture = Texture::pebbleShiner[entityList[i].animState];
+                }
+                if (!entityList[i].doAnim)
+                    entityList[i].animState = 0;
+            }
             if(Entity::entityList[i].type == YARD)
                 Entity::entityList[i].renderedTexture = Texture::grassTexture;
         }
     }
 
     //Render entities in order Y position.
-    //TODO Draw the "renderedEntity" for each entity behind the grass. Then draw the texture after so that, technically the texture is transparent.
     inline void renderEntities() {
 
         //Savant genius render the boxes used for collision *under* the grass LOL.
         std::sort(Entity::entityList.begin(), Entity::entityList.end(), compareByHeight);
         for (int i = 0; i < Entity::entityList.size(); i++){
-            if(Entity::entityList[i].draw && !Entity::entityList[i].isLocalPlayer && Entity::entityList[i].type != YARD) {
+            if(Entity::entityList[i].draw && Entity::entityList[i].type != PLAYER && Entity::entityList[i].type != YARD) {
                 SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
             }
         }
 
-        //Always render the grass here.
+        //Render the grass.
         for (int i = 0; i < Entity::entityList.size(); i++){
             if (Entity::entityList[i].type == YARD) {
                 SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
@@ -110,12 +116,12 @@ namespace Entity {
         }
         //Generic
         for (int i = 0; i < Entity::entityList.size(); i++){
-            if(Entity::entityList[i].draw && !Entity::entityList[i].isLocalPlayer && Entity::entityList[i].type != YARD) {
+            if(Entity::entityList[i].draw && !Entity::entityList[i].type == PLAYER && Entity::entityList[i].type != YARD) {
                     SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
                                    &Entity::entityList[i].renderedEntity);
 
             }
-            //Always render the localPlayer last.
+            //Always render the localPlayer last for now.
             SDL_RenderFillRect(Renderer::renderer,&Entity::getLocalPlayer()->renderedEntity);
         }
     }

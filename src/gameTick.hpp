@@ -28,7 +28,6 @@ void gameTick() {
             if(localPlayer.height < 0)
                 localPlayer.height = 0;
 
-
             //execute once per second
             if (Globals::tickCount % 64 == 0) {
                 std::cout << "Last tick completed in: " << (Globals::tickDelta / 1000) << "ms, " << "sleeping "
