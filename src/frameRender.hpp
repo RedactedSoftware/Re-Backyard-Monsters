@@ -7,16 +7,18 @@
 
 void frameRender() {
     if (Globals::frameCount == 1) {
-        Entity::storeEntity(entity{PLAYER,true,0,true,Globals::screenWidth / 2,Globals::screenHeight / 2,
-                                   4,4,Globals::screenWidth / 2,Globals::screenHeight / 2,4,4});
+        Entity::storeEntity(entity{YARD,false,0,true,Globals::screenWidth,0,
+                                   Globals::screenWidth,Globals::screenHeight,0,0,Globals::screenWidth,Globals::screenHeight});
+        Entity::storeEntity(entity{PLAYER,true,1,true,Globals::screenWidth,Globals::screenHeight,
+                                   4,4,Globals::screenWidth,Globals::screenHeight,4,4});
 
-        Entity::storeEntity(entity{PEBBLESHINER,false,1,true,0,0,
+        Entity::storeEntity(entity{PEBBLESHINER,false,2,true,0,0,
                                    64,64,0,0,64,64});
 
-        Entity::storeEntity(entity{PEBBLESHINER,false,2,true,0,32,
+        Entity::storeEntity(entity{PEBBLESHINER,false,3,true,0,32,
                                    64,64,0,32,64,64});
 
-        Menu::storeMenuObject(MenuObject{false,BACKGROUND,0,0,0,64,48});
+        Menu::storeMenuObject(MenuObject{false,BACKGROUND,4,0,0,64,48});
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
         }

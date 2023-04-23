@@ -9,12 +9,13 @@
 #include "texture.hpp"
 
 //entity types.
-enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, ERRORENTITY = -247};
+enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, ERRORENTITY = -247, YARD = 4};
 struct entity {
     int type;
     bool isLocalPlayer;
     int entityID;
     bool draw;
+    //bool animActive;
     int posX, posY, width, height;
     SDL_Rect renderedEntity;
     SDL_Texture* renderedTexture;
@@ -79,18 +80,37 @@ namespace Entity {
     }
     inline void storeEntityTextures() {
         for (int i = 0; i < Entity::entityList.size(); i++){
-            if (Entity::entityList[i].type == PEBBLESHINER) {
+            if (Entity::entityList[i].type == PEBBLESHINER)
                 Entity::entityList[i].renderedTexture = Texture::pebbleShinerTexture;
-            }
+
+            if(Entity::entityList[i].type == YARD)
+                Entity::entityList[i].renderedTexture = Texture::grassTexture;
         }
     }
 
     //Render entities in order Y position.
+    //TODO Draw the "renderedEntity" for each entity behind the grass. Then draw the texture after so that, technically the texture is transparent.
     inline void renderEntities() {
+
+        //Savant genius render the boxes used for collision *under* the grass LOL.
         std::sort(Entity::entityList.begin(), Entity::entityList.end(), compareByHeight);
         for (int i = 0; i < Entity::entityList.size(); i++){
-            if(Entity::entityList[i].draw && !Entity::entityList[i].isLocalPlayer) {
+            if(Entity::entityList[i].draw && !Entity::entityList[i].isLocalPlayer && Entity::entityList[i].type != YARD) {
                 SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
+            }
+        }
+
+        //Always render the grass here.
+        for (int i = 0; i < Entity::entityList.size(); i++){
+            if (Entity::entityList[i].type == YARD) {
+                SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
+                SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
+                               &Entity::entityList[i].renderedEntity);
+            }
+        }
+        //Generic
+        for (int i = 0; i < Entity::entityList.size(); i++){
+            if(Entity::entityList[i].draw && !Entity::entityList[i].isLocalPlayer && Entity::entityList[i].type != YARD) {
                     SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
                                    &Entity::entityList[i].renderedEntity);
 
