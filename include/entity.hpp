@@ -11,12 +11,14 @@
 #include <Vector2.hpp>
 
 //entity types.
-enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, ERRORENTITY = -247};
+enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, ERRORENTITY = -247, YARD = 4};
 struct entity {
     int type;
     bool isLocalPlayer;
     int entityID;
     bool draw;
+    bool doAnim;
+    int animState;
     int posX, posY, width, height;
     SDL_Rect renderedEntity;
     SDL_Texture* renderedTexture;
@@ -62,7 +64,7 @@ namespace ReBackyardMonsters {
     }
     inline entity* getLocalPlayer() {
         for (int i = 0; i < entityList.size(); i++){
-            if (entityList[i].type == PLAYER && entityList[i].isLocalPlayer)
+            if (entityList[i].type == PLAYER && entityList[i].type == PLAYER)
                 return &entityList[i];
         }
     }
@@ -98,29 +100,56 @@ namespace ReBackyardMonsters {
 
     inline void setLocalPlayer(entity e) {
         for (int i = 0; i < entityList.size(); i++){
-            if (entityList[i].type == PLAYER && entityList[i].isLocalPlayer)
+            if (entityList[i].type == PLAYER && entityList[i].type == PLAYER)
                 entityList[i] = e;
         }
     }
+
+    //TODO this won't work right until I check if tick-count is the same as it was last frame.
     inline void storeEntityTextures() {
         for (int i = 0; i < Entity::entityList.size(); i++){
             if (Entity::entityList[i].type == PEBBLESHINER) {
-                Entity::entityList[i].renderedTexture = Texture::pebbleShinerTexture;
+                if (entityList[i].doAnim) {
+                    entityList[i].animState++;
+                    if (entityList[i].animState > 25)
+                        entityList[i].animState = 0;
+                    Entity::entityList[i].renderedTexture = Texture::pebbleShiner[entityList[i].animState];
+                }
+                if (!entityList[i].doAnim)
+                    entityList[i].animState = 0;
             }
+            if(Entity::entityList[i].type == YARD)
+                Entity::entityList[i].renderedTexture = Texture::grassTexture;
         }
     }
 
     //Render entities in order Y position.
     inline void renderEntities() {
+
+        //Savant genius render the boxes used for collision *under* the grass LOL.
         std::sort(Entity::entityList.begin(), Entity::entityList.end(), compareByHeight);
         for (int i = 0; i < Entity::entityList.size(); i++){
-            if(Entity::entityList[i].draw && !Entity::entityList[i].isLocalPlayer) {
+            if(Entity::entityList[i].draw && Entity::entityList[i].type != PLAYER && Entity::entityList[i].type != YARD) {
                 SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
+            }
+        }
+
+        //Render the grass.
+        for (int i = 0; i < Entity::entityList.size(); i++){
+            if (Entity::entityList[i].type == YARD) {
+                SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
+                SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
+                               &Entity::entityList[i].renderedEntity);
+            }
+        }
+        //Generic
+        for (int i = 0; i < Entity::entityList.size(); i++){
+            if(Entity::entityList[i].draw && !Entity::entityList[i].type == PLAYER && Entity::entityList[i].type != YARD) {
                     SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
                                    &Entity::entityList[i].renderedEntity);
 
             }
-            //Always render the localPlayer last.
+            //Always render the localPlayer last for now.
             SDL_RenderFillRect(Renderer::renderer,&Entity::getLocalPlayer()->renderedEntity);
         }
     }
