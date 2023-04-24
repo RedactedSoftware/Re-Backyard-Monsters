@@ -79,7 +79,6 @@ namespace Entity {
         }
     }
 
-    //TODO this won't work right until I check if tick-count is the same as it was last frame.
     inline void storeEntityTextures() {
         for (int i = 0; i < Entity::entityList.size(); i++){
             if (Entity::entityList[i].type == PEBBLESHINER) {

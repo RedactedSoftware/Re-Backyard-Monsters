@@ -37,7 +37,8 @@ void gameTick() {
                 << ((Globals::minimumTickDelta - Globals::tickDelta) / 1000) << "ms." << std::endl;
                     std::cout << "Last frame rendered in: " << (Globals::frameDelta / 1000) << "ms." << std::endl;
                     std::cout << Globals::frameCount << " frames have elapsed." << std::endl;
-                    std::cout << GameState::getPreviousEntityList(1)[2].animState << std::endl;
+                    std::cout << GameState::getPreviousEntityList(3)[2].animState << std::endl;
+                    std::cout << Entity::entityList[2].animState << std::endl;
             }
             if(Entity::getEntityByClick()->type != ERRORENTITY)
                 std::cout << Entity::getEntityByClick()->entityID << std::endl;
