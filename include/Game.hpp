@@ -17,6 +17,7 @@ namespace ReBackyardMonsters
         void Cleanup();
 
         bool Focused;
+        bool Paused;
 
     protected:
     private:
@@ -33,6 +34,16 @@ namespace ReBackyardMonsters
         float frameDelta;
         int frameCount;
     };
+
+    Vector2 Game::getWindowSize() {
+        int* x;
+        int* y;
+        SDL_GetWindowSize(window, x, y);
+        return {*x, *y};
+    }
+    void Game::setWindowSize(int x, int y) {
+        SDL_SetWindowSize(window, x, y);
+    }
 
     void Game::RenderThread()
     {
@@ -81,6 +92,29 @@ namespace ReBackyardMonsters
         Scene = GameScene();
         Scene.AddEntity( YardEntity());
         Scene.AddEntity();
+
+        Menu::storeMenuObject(MenuObject{false, BACKGROUND, 4, 0, 0, 64, 48});
+
+
+        if (SDL_Init(SDL_INIT_VIDEO) < 0)
+            std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
+
+
+        window = SDL_CreateWindow("Re: Backyard Monsters", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1152, 864, SDL_WINDOW_SHOWN);
+        SDL_SetWindowResizable(window, SDL_TRUE);
+        if (window == nullptr) {
+            std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
+        }
+        int imgFlags = IMG_INIT_PNG;
+        if (!(IMG_Init(imgFlags) & imgFlags))
+            std::cerr << "SDL_Error: " << "Couldn't init SDL_Image." << std::endl;
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        SDL_RenderSetLogicalSize(renderer, 1152, 864);
+        SDL_GL_SetSwapInterval(0);
+        SDL_UpdateWindowSurface(window);
+
+        Texture::loadMedia();
+        Entity::storeEntityTextures();
     }
 
     void Game::Render() {
@@ -89,6 +123,7 @@ namespace ReBackyardMonsters
 
     void Game::Gametick(float delta)
     {
-
+        if (Paused)
+            return;
     }
 }
