@@ -4,7 +4,7 @@ project(ReBackyardMonsters)
 file(GLOB SOURCES src/*.cpp)
 
 include_directories(include)
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
+add_library(${PROJECT_NAME} SHARED ${SOURCES} src/gameState.hpp)
 
 set(CMAKE_CXX_FLAGS "-pedantic -Wall -Wextra")
 set(CMAKE_CXX_STANDARD 20)

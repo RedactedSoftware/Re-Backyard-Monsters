@@ -4,6 +4,7 @@
 #include "globals.hpp"
 #include "inputHandler.hpp"
 #include "entity.hpp"
+#include "gameState.hpp"
 
 void gameTick() {
     while (true) {
@@ -36,6 +37,7 @@ void gameTick() {
                 << ((Globals::minimumTickDelta - Globals::tickDelta) / 1000) << "ms." << std::endl;
                     std::cout << "Last frame rendered in: " << (Globals::frameDelta / 1000) << "ms." << std::endl;
                     std::cout << Globals::frameCount << " frames have elapsed." << std::endl;
+                    std::cout << GameState::getPreviousEntityList(1)[2].animState << std::endl;
             }
             if(Entity::getEntityByClick()->type != ERRORENTITY)
                 std::cout << Entity::getEntityByClick()->entityID << std::endl;
@@ -47,6 +49,7 @@ void gameTick() {
             localPlayer.renderedEntity.h = localPlayer.height;
             Entity::setLocalPlayer(localPlayer);
             Globals::tickCount = Globals::tickCount + 1;
+            GameState::storeGameState();
             auto stop = std::chrono::high_resolution_clock::now();
             //limit to 64 ticks per second.
             if ((int) Globals::tickDelta < Globals::minimumTickDelta)
