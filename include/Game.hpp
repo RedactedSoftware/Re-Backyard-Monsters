@@ -3,99 +3,113 @@
 #include <SDL2/SDL.h>
 #include <GameScene.hpp>
 #include <entity.hpp>
+#include <thread>
+#include <iostream>
 
 namespace ReBackyardMonsters
 {
-    class Game {
+
+    class SDLGame {
     public:
-        GameScene Scene;
-        Game() {}
-        ~Game() {}
-        void Initialize();
+        virtual void Initialize();
+        virtual void Cleanup();
+        virtual void Update(float delta);
+        virtual void Render();
+
         // Starts Render & Gametic Threads
         void Run();
-        void Cleanup();
+        void Gameloop();
+        void RunFrame();
 
         bool Focused;
         bool Paused;
 
-    protected:
-    private:
-        void RenderThread();
-        void GametickThread();
+        Vector2 GetWindowSize();
+        void SetWindowSize(int x, int y);
+        void SetWindowSize(Vector2 const&v);
 
-        void Render();
-        void Gametick(float delta);
+    protected:
         bool requestQuit;
+        float frameDelta;
+        float tickDelta;
+        int frameCount;
+
         SDL_Event event;
         SDL_Renderer *renderer;
         SDL_Window *window;
 
-        float frameDelta;
-        int frameCount;
     };
 
-    Vector2 Game::getWindowSize() {
+    Vector2 SDLGame::GetWindowSize() {
         int* x;
         int* y;
         SDL_GetWindowSize(window, x, y);
         return {*x, *y};
     }
-    void Game::setWindowSize(int x, int y) {
+    void SDLGame::SetWindowSize(int x, int y) {
         SDL_SetWindowSize(window, x, y);
     }
+    void SDLGame::SetWindowSize(Vector2 const&v) {
+        SDL_SetWindowSize(window, v.GetX(), v.GetY());
+    }
 
-    void Game::RenderThread()
+    void SDLGame::Render()
     {
-        while (!requestQuit)
-        {
-            // TODO: Why not handle these on the GameTick thread instead...
-            while (SDL_PollEvent(&event)) {
-                if (event.type == SDL_QUIT)
-                    requestQuit = true;
 
-                if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
-                    Focused = false;
+    }
+    void SDLGame::Update(float delta)
+    {
 
-                if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-                    Focused = true;
-            }
-            auto begin = std::chrono::high_resolution_clock::now();
-            this->Render();
-            if (!Focused)
-                std::this_thread::sleep_for(std::chrono::microseconds((62500 - Globals::minimumFrameDelta)));
-            auto end = std::chrono::high_resolution_clock::now();
+    }
 
-            frameDelta = std::abs(std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count());
-            if (frameDelta < Globals::minimumFrameDelta && Focused)
-                std::this_thread::sleep_for(std::chrono::microseconds(Globals::minimumFrameDelta - (int) frameDelta));
-            frameCount++;
+    void SDLGame::Run()
+    {
+        Gameloop();
+    }
+
+    void SDLGame::Gameloop() {
+        while (!requestQuit) {
+            RunFrame();
         }
+    }
+
+    void SDLGame::RunFrame()
+    {
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT)
+                requestQuit = true;
+
+            if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+                Focused = false;
+
+            if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+                Focused = true;
+        }
+        auto start = std::chrono::high_resolution_clock::now();
+
+        this->Update(frameDelta);
+        this->Render();
+
+        // TODO: Refactor time tracking to seconds, so we can actually use it in Gametick() sanely
+        if (!Focused)
+            std::this_thread::sleep_for(std::chrono::microseconds((62500 - Globals::minimumFrameDelta)));
+        auto stop = std::chrono::high_resolution_clock::now();
+
+        frameDelta = std::chrono::duration_cast<std::chrono::microseconds>(start-stop).count();
+        if (frameDelta < Globals::minimumFrameDelta && Focused)
+            std::this_thread::sleep_for(std::chrono::microseconds(Globals::minimumFrameDelta - (int) frameDelta));
+        frameCount++;
+    }
+
+    void SDLGame::Cleanup()  {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
         exit(1);
     }
-    void Game::GametickThread()
-    {
 
-    }
-
-    void StartGameloop()
-    {
-        std::thread frameRendr
-    }
-
-
-
-    void Game::Initialize() {
-        Scene = GameScene();
-        Scene.AddEntity( YardEntity());
-        Scene.AddEntity();
-
-        Menu::storeMenuObject(MenuObject{false, BACKGROUND, 4, 0, 0, 64, 48});
-
-
+    void SDLGame::Initialize() {
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
 
@@ -112,18 +126,53 @@ namespace ReBackyardMonsters
         SDL_RenderSetLogicalSize(renderer, 1152, 864);
         SDL_GL_SetSwapInterval(0);
         SDL_UpdateWindowSurface(window);
+    }
 
+    class Game: public SDLGame {
+    public:
+        GameScene Scene;
+        Game() {}
+        ~Game() {}
+
+
+        void Initialize() override;
+        void Cleanup() override;
+        void Render() override;
+        void Update(float delta) override;
+    protected:
+    private:
+    };
+
+
+    void Game::Cleanup() {
+        // Do cleanup here
+
+        // Cleanup SDL stuff
+        SDLGame::Cleanup();
+    }
+
+    void Game::Initialize() {
+        SDLGame::Initialize();
+
+        Scene = GameScene();
+        //Scene.AddEntity( YardEntity());
+        //Scene.AddEntity();
+
+        Menu::storeMenuObject(MenuObject{false, BACKGROUND, 4, 0, 0, 64, 48});
         Texture::loadMedia();
-        Entity::storeEntityTextures();
+        //Entity::storeEntityTextures();
     }
 
     void Game::Render() {
-
+        SDLGame::Render();
     }
 
-    void Game::Gametick(float delta)
+    void Game::Update(float delta)
     {
+        SDLGame::Update(delta);
         if (Paused)
             return;
+        // Add Game Logic Here
     }
+
 }
