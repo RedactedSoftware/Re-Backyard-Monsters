@@ -36,46 +36,46 @@ namespace ReBackyardMonsters {
         Vector2 BoundingBox;
         UUID EntityID;
     public:
+        virtual void Draw();
+    public:
         UUID GetUUID();
     };
-    class PlayerEntity : public Entity { };
-    class LocalPlayerEntity : public PlayerEntity { };
-    class TownHall : public Entity { };
-    class PebbleShiner : public Entity { };
-    class ErrorEntity : public Entity {
+    class PlayerEntity : public virtual Entity { };
+    class LocalPlayerEntity : public virtual PlayerEntity { };
+    class TownHall : public virtual Entity { };
+    class PebbleShiner : public virtual Entity { };
+    class YardEntity : public virtual Entity { };
+    class ErrorEntity : public virtual Entity {
 
     };
-
-
-
 
     //inline std::vector<entity> entityList;
     inline entity ErrorEntity = {ERRORENTITY,0,-247,false};
 
-    inline void storeEntity(entity e) {
+    /*inline void storeEntity(entity e) {
         entityList.push_back(e);
-    }
+    }*/
 
-    inline entity* getEntityByID(int id) {
+    /*inline entity* getEntityByID(int id) {
         for (int i = 0; i < entityList.size(); i++) {
             if (entityList[i].entityID == id)
                 return &entityList[i];
         }
-    }
-    inline entity* getLocalPlayer() {
+    }*/
+    /*inline entity* getLocalPlayer() {
         for (int i = 0; i < entityList.size(); i++){
             if (entityList[i].type == PLAYER && entityList[i].type == PLAYER)
                 return &entityList[i];
         }
-    }
-    inline bool compareByHeight(const entity &x, const entity &y)
+    }*/
+    /*inline bool compareByHeight(const entity &x, const entity &y)
     {
         return x.posY < y.posY;
-    }
+    }*/
 
     //TODO This is the biggest hack I've ever made.
     //Return the entity the player is intersecting with which has the lowest Y coordinate.
-    inline entity* getEntityByIntersection() {
+    /*inline entity* getEntityByIntersection() {
         std::vector<entity> intersectionVector;
         for (int i = 0; i < entityList.size(); i++){
             if (SDL_HasIntersection(&Entity::getLocalPlayer()->renderedEntity, &entityList[i].renderedEntity) == SDL_TRUE) {
@@ -89,7 +89,7 @@ namespace ReBackyardMonsters {
             return &Entity::ErrorEntity;
         std::reverse(intersectionVector.begin(),intersectionVector.end());
         return Entity::getEntityByID(intersectionVector[0].entityID);
-    }
+    }*/
 
     inline entity* getEntityByClick() {
         if (InputHandler::isMouse1Down) {
