@@ -4,7 +4,22 @@
 #include <string>
 #include "globals.hpp"
 
-namespace InputHandler {
+namespace ReBackyardMonsters {
+
+    
+
+    class InputHelper : Singleton
+    {
+        void HandleInputEvent(SDL_Event e)
+        {
+            if (e.type == SDL_KEYDOWN)
+                onKeyDown(e);
+            if (e.type == SDL_KEYUP)
+                onKeyUp(e);
+        }
+        
+    }
+    
     inline bool isMouse1Down = false;
 
     inline std::vector<int> getMousePosition() {
