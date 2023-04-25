@@ -4,7 +4,7 @@
 #include <iterator>
 #include "entity.hpp"
 #include "json.h"
-using jsonf = nlohmann::json;
+//using jsonf = nlohmann::json;
 
 struct gamestate {
 std::vector<std::vector<entity>> entityLists;
@@ -12,7 +12,32 @@ std::vector<std::vector<entity>> entityLists;
 };
 
 
-namespace GameState {
+namespace ReBackyardMonster {
+
+    // Add members you want serialized to these two functions
+    void to_json(json& j, const Gamestate& g)
+    {
+        j = json{
+          {"timestamp", g.Timestamp},
+          {}, 
+        };
+    }
+
+    void from_json(const json& j, Gamestate& g)
+    {
+        j.at("timestamp").get_to(g.Timestamp);
+    }
+
+    // Gamestate object to be serialized
+    class Gamestate {
+    public:
+        std::string Timestamp;
+        std::vector<entity> entities;
+    protected:
+    private:    
+    }
+
+
     inline gamestate gameState;
 
     void storeGameState() {
@@ -40,21 +65,27 @@ namespace GameState {
         return std::vector<entity>{Entity::ErrorEntity};
     }
 
+#define SAVE_GAME_FILE_NAME "savegame.json"
+
     //The save load code will eventually be on the server and the state of the entityList would be received through the network stream.
-    void SaveGame() {
-        std::ofstream fout("saveGame.dat", std::ios::out | std::ios::binary);
-        fout.write((char*)&GameState::getPreviousEntityList(1)[0], GameState::getPreviousEntityList(1).size() * sizeof(GameState::getPreviousEntityList(1)));
-        fout.close();
+    void SaveGame(Gamestate const&state) {
+        json j = state; // Autoconversion
+        std::ofstream o(SAVE_GAME_FILE_NAME, std::ios::out);
+        o << j.dump(4) << std::endl;
+        //std::ofstream fout("saveGame.dat", std::ios::out | std::ios::binary);
+        //fout.write((char*)&GameState::getPreviousEntityList(1)[0], GameState::getPreviousEntityList(1).size() * sizeof(GameState::getPreviousEntityList(1)));
+        //fout.close();
+    }
 
-        }
-
-    void LoadGame() {
-        std::string saveGame = "savegame.json";
-        if (!std::ifstream {saveGame}.good()) {
+    Gamestate LoadGame() {
+        if (!std::ifstream {SAVE_GAME_FILE_NAME}.good()) {
             //TODO write the default savegame if the file doesn't exist.
             //create empty file.
-            std::ofstream output(saveGame);
+            std::ofstream output(SAVE_GAME_FILE_NAME);
         }
         //load
+        json j;
+        saveGameFileName >> j;
+        return j.get<Gamestate>();
     }
 }
