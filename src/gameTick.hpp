@@ -39,6 +39,7 @@ void gameTick() {
                     std::cout << Globals::frameCount << " frames have elapsed." << std::endl;
                     std::cout << GameState::getPreviousEntityList(3)[2].animState << std::endl;
                     std::cout << Entity::entityList[2].animState << std::endl;
+                    GameState::SaveGame();
             }
             if(Entity::getEntityByClick()->type != ERRORENTITY)
                 std::cout << Entity::getEntityByClick()->entityID << std::endl;

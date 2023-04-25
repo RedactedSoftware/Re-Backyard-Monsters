@@ -1,6 +1,10 @@
 #include <vector>
 #include <string>
+#include <fstream>
+#include <iterator>
 #include "entity.hpp"
+#include "json.h"
+using jsonf = nlohmann::json;
 
 struct gamestate {
 std::vector<std::vector<entity>> entityLists;
@@ -32,7 +36,25 @@ namespace GameState {
             std::reverse(el.begin(), el.end());
             return el[ticksAgo];
         }
-        //returns an empty entityList if something bad happened.
-        return std::vector<entity>{};
+        //returns an entity list with an error entity if something bad happened.
+        return std::vector<entity>{Entity::ErrorEntity};
+    }
+
+    //The save load code will eventually be on the server and the state of the entityList would be received through the network stream.
+    void SaveGame() {
+        std::ofstream fout("saveGame.dat", std::ios::out | std::ios::binary);
+        fout.write((char*)&GameState::getPreviousEntityList(1)[0], GameState::getPreviousEntityList(1).size() * sizeof(GameState::getPreviousEntityList(1)));
+        fout.close();
+
+        }
+
+    void LoadGame() {
+        std::string saveGame = "savegame.json";
+        if (!std::ifstream {saveGame}.good()) {
+            //TODO write the default savegame if the file doesn't exist.
+            //create empty file.
+            std::ofstream output(saveGame);
+        }
+        //load
     }
 }
