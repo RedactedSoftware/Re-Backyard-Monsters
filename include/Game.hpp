@@ -53,14 +53,21 @@ namespace ReBackyardMonsters
         SDL_SetWindowSize(window, v.GetX(), v.GetY());
     }
 
-    void SDLGame::Render()
-    {
+    void SDLGame::Render() { }
+    void SDLGame::Update(float delta) { }
 
-    }
-    void SDLGame::Update(float delta)
-    {
+	void SDLGame::handleEvents() {
+		while (SDL_PollEvent(&event)) {
+		    if (event.type == SDL_QUIT)
+		        requestQuit = true;
+		
+		    if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+		    	Focused = false;
 
-    }
+			if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+				Focused = true;
+		}
+	}    
 
     void SDLGame::Run()
     {
@@ -75,17 +82,8 @@ namespace ReBackyardMonsters
 
     void SDLGame::RunFrame()
     {
-
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT)
-                requestQuit = true;
-
-            if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
-                Focused = false;
-
-            if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-                Focused = true;
-        }
+		this->handleEvents(); // Include this in timing?
+        
         auto start = std::chrono::high_resolution_clock::now();
 
         this->Update(frameDelta);
