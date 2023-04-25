@@ -6,6 +6,7 @@
 #include "globals.hpp"
 #include "renderer.hpp"
 #include "menu.hpp"
+
 namespace Texture {
     inline SDL_Texture* loadTexture(std::string path) {
         //The final texture

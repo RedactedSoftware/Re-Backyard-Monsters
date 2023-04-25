@@ -29,17 +29,27 @@ typedef uint64_t UUID;
 namespace ReBackyardMonsters {
 
     class Entity {
+    public:
         Vector2 Position;
         Vector2 PrevPosition;
         Vector2 NextPosition;
         Vector2 Velocity;
         Vector2 BoundingBox;
         UUID EntityID;
-    public:
         virtual void Draw();
+        virtual void Update(delta);
+        virtual void Tick();
     public:
         UUID GetUUID();
+    protected:
+    private:
     };
+
+    Entity::Entity()
+    {
+        
+    }
+    
     class PlayerEntity : public virtual Entity { };
     class LocalPlayerEntity : public virtual PlayerEntity { };
     class TownHall : public virtual Entity { };
