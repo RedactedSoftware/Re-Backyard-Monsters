@@ -31,16 +31,18 @@ namespace Entity {
     }
 
     inline entity* getEntityByID(int id) {
-        for (int i = 0; i < entityList.size(); i++) {
+        for (int i = 0; (size_t) i < entityList.size(); i++) {
             if (entityList[i].entityID == id)
                 return &entityList[i];
         }
+        return &ErrorEntity;
     }
     inline entity* getLocalPlayer() {
-        for (int i = 0; i < entityList.size(); i++){
+        for (int i = 0; (size_t) i < entityList.size(); i++){
             if (entityList[i].type == PLAYER && entityList[i].type == PLAYER)
                 return &entityList[i];
         }
+        return &ErrorEntity;
     }
     inline bool compareByHeight(const entity &x, const entity &y)
     {
@@ -51,7 +53,7 @@ namespace Entity {
     //Return the entity the player is intersecting with which has the lowest Y coordinate.
     inline entity* getEntityByIntersection() {
         std::vector<entity> intersectionVector;
-        for (int i = 0; i < entityList.size(); i++){
+        for (int i = 0; (size_t) i < entityList.size(); i++){
             if (SDL_HasIntersection(&Entity::getLocalPlayer()->renderedEntity, &entityList[i].renderedEntity) == SDL_TRUE) {
                 if(!Entity::entityList[i].type == PLAYER) {
                     intersectionVector.push_back(Entity::entityList[i]);
@@ -73,14 +75,14 @@ namespace Entity {
     }
 
     inline void setLocalPlayer(entity e) {
-        for (int i = 0; i < entityList.size(); i++){
+        for (int i = 0; (size_t) i < entityList.size(); i++){
             if (entityList[i].type == PLAYER && entityList[i].type == PLAYER)
                 entityList[i] = e;
         }
     }
 
     inline void storeEntityTextures() {
-        for (int i = 0; i < Entity::entityList.size(); i++){
+        for (int i = 0; (size_t) i < Entity::entityList.size(); i++){
             if (Entity::entityList[i].type == PEBBLESHINER) {
                 if (entityList[i].doAnim) {
                     entityList[i].animState++;
@@ -101,14 +103,14 @@ namespace Entity {
 
         //Savant genius render the boxes used for collision *under* the grass LOL.
         std::sort(Entity::entityList.begin(), Entity::entityList.end(), compareByHeight);
-        for (int i = 0; i < Entity::entityList.size(); i++){
+        for (int i = 0; (size_t) i < Entity::entityList.size(); i++){
             if(Entity::entityList[i].draw && Entity::entityList[i].type != PLAYER && Entity::entityList[i].type != YARD) {
                 SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
             }
         }
 
         //Render the grass.
-        for (int i = 0; i < Entity::entityList.size(); i++){
+        for (int i = 0; (size_t) i < Entity::entityList.size(); i++){
             if (Entity::entityList[i].type == YARD) {
                 SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
                 SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
@@ -116,7 +118,7 @@ namespace Entity {
             }
         }
         //Generic
-        for (int i = 0; i < Entity::entityList.size(); i++){
+        for (int i = 0; (size_t) i < Entity::entityList.size(); i++){
             if(Entity::entityList[i].draw && !Entity::entityList[i].type == PLAYER && Entity::entityList[i].type != YARD) {
                     SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
                                    &Entity::entityList[i].renderedEntity);

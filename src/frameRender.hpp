@@ -7,6 +7,7 @@
 
 void frameRender() {
     if (Globals::frameCount == 1) {
+        //Placeholder load entities on first frame. Will eventually load the savegame here.
         Entity::storeEntity(entity{YARD,0,true,false,0,Globals::screenWidth,0,
                                    Globals::screenWidth,Globals::screenHeight,0,0,Globals::screenWidth,Globals::screenHeight});
         Entity::storeEntity(entity{PLAYER,1,true,false,0,Globals::screenWidth,Globals::screenHeight,
