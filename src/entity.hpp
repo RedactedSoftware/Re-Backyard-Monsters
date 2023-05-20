@@ -9,25 +9,42 @@
 #include "texture.hpp"
 
 //entity types.
-enum { PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, ERRORENTITY = -247, YARD = 4};
-struct entity {
+enum {ERRORENTITY = -247, PLAYER = 0, TOWNHALL = 1, TWIGSNAPPER = 2, PEBBLESHINER = 3, YARD = 4, SILO = 5};
+
+//entity flags.
+enum {SELECTED = 0, DRAW = 1, DOANIM = 2};
+class entity {
+public:
     int type;
     int entityID;
-    bool draw;
-    bool doAnim;
     int animState;
     int posX, posY, width, height;
     SDL_Rect renderedEntity;
     SDL_Texture* renderedTexture;
+    std::vector<int> flags;
+};
+class building: public entity {
 };
 
 
 namespace Entity {
     inline std::vector<entity> entityList;
-    inline entity ErrorEntity = {ERRORENTITY,-247,false};
+    inline entity ErrorEntity = {ERRORENTITY,ERRORENTITY,false};
 
     inline void storeEntity(entity e) {
         entityList.push_back(e);
+    }
+
+    //if flag is in entity flags.
+    inline bool searchFlags(const entity &e, int FLAG) {
+        if (std::find(e.flags.begin(),e.flags.end(),FLAG) != e.flags.end())
+            return true;
+        return false;
+    }
+
+    //set entity flag.
+    inline void setFlag( entity &e, int FLAG) {
+        e.flags.push_back(FLAG);
     }
 
     inline entity* getEntityByID(int id) {
@@ -49,7 +66,7 @@ namespace Entity {
         return x.posY < y.posY;
     }
 
-    //TODO This is the biggest hack I've ever made.
+    //TODO This is a total hack.
     //Return the entity the player is intersecting with which has the lowest Y coordinate.
     inline entity* getEntityByIntersection() {
         std::vector<entity> intersectionVector;
@@ -84,27 +101,42 @@ namespace Entity {
     inline void storeEntityTextures() {
         for (int i = 0; (size_t) i < Entity::entityList.size(); i++){
             if (Entity::entityList[i].type == PEBBLESHINER) {
-                if (entityList[i].doAnim) {
+                if (Entity::searchFlags(Entity::entityList[i], DOANIM)) {
                     entityList[i].animState++;
-                    if (entityList[i].animState > 25)
+                    if (entityList[i].animState > Texture::pebbleShiner.size() -1)
                         entityList[i].animState = 0;
                     Entity::entityList[i].renderedTexture = Texture::pebbleShiner[entityList[i].animState];
                 }
-                if (!entityList[i].doAnim)
-                    entityList[i].animState = 0;
+                if (!Entity::searchFlags(Entity::entityList[i], DOANIM)) {
+                    entityList[i].animState = 1;
+                    Entity::entityList[i].renderedTexture = Texture::pebbleShiner[entityList[i].animState];
+                }
             }
             if(Entity::entityList[i].type == YARD)
                 Entity::entityList[i].renderedTexture = Texture::grassTexture;
         }
     }
 
+    //inline void setCollisionDelta() {
+        //int width;
+        //int height;
+        //int delta;
+        //for (int i = 0; (size_t) i < Entity::entityList.size(); i++){
+            //SDL_QueryTexture(Entity::entityList[i].renderedTexture, NULL, NULL, &width, &height);
+            //if (Entity::entityList[i].draw && Entity::entityList[i].renderedEntity.h < height) {
+                //delta = (Entity::entityList[i].renderedEntity.h - height);
+                //std::cout << delta << std::endl;
+            //}
+        //}
+    //}
+
     //Render entities in order Y position.
     inline void renderEntities() {
-
+    //setCollisionDelta();
         //Savant genius render the boxes used for collision *under* the grass LOL.
         std::sort(Entity::entityList.begin(), Entity::entityList.end(), compareByHeight);
         for (int i = 0; (size_t) i < Entity::entityList.size(); i++){
-            if(Entity::entityList[i].draw && Entity::entityList[i].type != PLAYER && Entity::entityList[i].type != YARD) {
+            if(Entity::searchFlags(Entity::entityList[i], DRAW) && Entity::entityList[i].type != PLAYER && Entity::entityList[i].type != YARD) {
                 SDL_RenderFillRect(Renderer::renderer, &Entity::entityList[i].renderedEntity);
             }
         }
@@ -117,9 +149,10 @@ namespace Entity {
                                &Entity::entityList[i].renderedEntity);
             }
         }
+
         //Generic
         for (int i = 0; (size_t) i < Entity::entityList.size(); i++){
-            if(Entity::entityList[i].draw && !Entity::entityList[i].type == PLAYER && Entity::entityList[i].type != YARD) {
+            if(Entity::searchFlags(Entity::entityList[i], DRAW) && !Entity::entityList[i].type == PLAYER && Entity::entityList[i].type != YARD) {
                     SDL_RenderCopy(Renderer::renderer, Entity::entityList[i].renderedTexture, NULL,
                                    &Entity::entityList[i].renderedEntity);
 

@@ -28,6 +28,8 @@ void gameTick() {
                 localPlayer.posX = Globals::screenWidth - localPlayer.width;
             if(localPlayer.height < 0)
                 localPlayer.height = 0;
+
+            //swap in new texture from anim.
             if(Globals::tickCount %5 == 0 && Globals::frameCount != 1)
                 Entity::storeEntityTextures();
 

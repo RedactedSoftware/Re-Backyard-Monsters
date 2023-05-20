@@ -8,18 +8,16 @@
 void frameRender() {
     if (Globals::frameCount == 1) {
         //Placeholder load entities on first frame. Will eventually load the savegame here.
-        Entity::storeEntity(entity{YARD,0,true,false,0,Globals::screenWidth,0,
-                                   Globals::screenWidth,Globals::screenHeight,0,0,Globals::screenWidth,Globals::screenHeight});
-        Entity::storeEntity(entity{PLAYER,1,true,false,0,Globals::screenWidth,Globals::screenHeight,
-                                   4,4,Globals::screenWidth,Globals::screenHeight,4,4});
+        Entity::storeEntity(entity{YARD,0,0,0,0,Globals::screenWidth,Globals::screenHeight,
+                                   0,0,Globals::screenWidth,Globals::screenHeight});
 
-        Entity::storeEntity(entity{PEBBLESHINER,2,true,true,0,0,0,
-                                   64,64,0,0,64,64});
+        Entity::storeEntity(entity{PLAYER,1,0,0,0,4,4,0,0,4,4});
 
-        Entity::storeEntity(entity{PEBBLESHINER,3,true,true,0,0,32,
-                                   64,64,0,32,64,64});
+        Entity::storeEntity(entity{PEBBLESHINER,2,0,0,0,64,64,0,0,64,64});
+        Entity::setFlag(*Entity::getEntityByID(2), DRAW);
+        Entity::setFlag(*Entity::getEntityByID(2), DOANIM);
 
-        Menu::storeMenuObject(MenuObject{false,BACKGROUND,4,0,0,64,48});
+        //Menu::storeMenuObject(MenuObject{false,BACKGROUND,4,0,0,64,48});
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             std::cerr << "SDL_Error: " << SDL_GetError() << std::endl;
         }
@@ -38,7 +36,6 @@ void frameRender() {
         SDL_UpdateWindowSurface(Globals::window);
 
         Texture::loadMedia();
-        //This will end up needing to be moved later on.
         Entity::storeEntityTextures();
     }
     while (!Globals::shouldQuit) {
