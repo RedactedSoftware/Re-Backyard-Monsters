@@ -28,7 +28,7 @@ void frameRender() {
         }
         //Initialize PNG loading
         int imgFlags = IMG_INIT_PNG;
-        if( !( IMG_Init( imgFlags ) & imgFlags ) )
+        if(!(IMG_Init( imgFlags ) & imgFlags ))
             std::cerr << "SDL_Error: " << "Couldn't init SDL_Image." << std::endl;
         Renderer::renderer = SDL_CreateRenderer(Globals::window, -1, SDL_RENDERER_ACCELERATED);
         SDL_RenderSetLogicalSize(Renderer::renderer, 1152, 864);

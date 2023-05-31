@@ -1,3 +1,5 @@
+//Waiting for @scientiist to finish the SDL2 conversion of JUI.
+
 #include <SDL2/SDL.h>
 #include <vector>
 #include "renderer.hpp"

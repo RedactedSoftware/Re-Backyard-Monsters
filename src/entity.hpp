@@ -117,6 +117,7 @@ namespace Entity {
         }
     }
 
+    //TODO create my own collision.
     //inline void setCollisionDelta() {
         //int width;
         //int height;

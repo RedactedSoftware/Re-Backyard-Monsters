@@ -8,7 +8,7 @@ using jsonf = nlohmann::json;
 
 struct gamestate {
 std::vector<std::vector<entity>> entityLists;
-//Eventually get the stuff for money here.
+//Eventually get the stuff for resources here.
 };
 
 
@@ -17,9 +17,8 @@ namespace GameState {
 
     void storeGameState() {
         GameState::gameState.entityLists.push_back(Entity::entityList);
-
         //Only store the last 3 ticks.
-        if(GameState::gameState.entityLists.size() > 3) {
+        if (GameState::gameState.entityLists.size() > 3) {
             //reverse so we don't pop off the one we just put on.
             std::reverse(GameState::gameState.entityLists.begin(), GameState::gameState.entityLists.end());
             GameState::gameState.entityLists.pop_back();

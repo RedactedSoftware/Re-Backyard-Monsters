@@ -10,7 +10,7 @@ void gameTick() {
     while (true) {
         //The first tick *must* be after the first frame has completed.
         if (Globals::frameCount == 1)
-            //TODO Do this a different way, Checking if framecount 2 doesn't work and this is a total hack.
+            //TODO Do this a different way, Checking if framecount != 1 doesn't work and this is a total hack.
             std::this_thread::sleep_for(std::chrono::milliseconds(25));
         entity localPlayer = *Entity::getLocalPlayer();
         if (!Globals::isPaused) {
@@ -29,7 +29,7 @@ void gameTick() {
             if(localPlayer.height < 0)
                 localPlayer.height = 0;
 
-            //swap in new texture from anim.
+            //swap in new texture from anims.
             if(Globals::tickCount %5 == 0 && Globals::frameCount != 1)
                 Entity::storeEntityTextures();
 
@@ -46,7 +46,7 @@ void gameTick() {
             if(Entity::getEntityByClick()->type != ERRORENTITY)
                 std::cout << Entity::getEntityByClick()->entityID << std::endl;
 
-            //TODO assign this in the frameRender thread right before drawing so we can interpolate it.
+            //TODO assign this in the frameRender thread right before drawing so we can interpolate it using "gameState".
             localPlayer.renderedEntity.x = localPlayer.posX;
             localPlayer.renderedEntity.y = localPlayer.posY;
             localPlayer.renderedEntity.w = localPlayer.width;
