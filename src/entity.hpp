@@ -47,6 +47,12 @@ namespace Entity {
         e.flags.push_back(FLAG);
     }
 
+    inline void delFlag(entity &e, int FLAG) {
+        if (Entity::searchFlags(e,FLAG)) {
+            e.flags.erase(std::remove(e.flags.begin(), e.flags.end(), FLAG), e.flags.end());
+        }
+    }
+
     inline entity* getEntityByID(int id) {
         for (int i = 0; (size_t) i < entityList.size(); i++) {
             if (entityList[i].entityID == id)
@@ -117,6 +123,27 @@ namespace Entity {
         }
     }
 
+    inline void doAnimCycle() {
+        if(Globals::tickCount %5 == 0 && Globals::frameCount != 1)
+            Entity::storeEntityTextures();
+    }
+
+    inline void selectEntity(entity e) {
+        //Check if an entity was already selected.
+        for (int i = 0; (size_t) i < entityList.size(); i++) {
+            if(Entity::searchFlags(Entity::entityList[i], SELECTED)) {
+                Entity::delFlag(Entity::entityList[i], SELECTED);
+            }
+            Entity::setFlag(e, SELECTED);
+        }
+    }
+    inline entity getSelectedEntity() {
+        for (int i = 0; (size_t) i < entityList.size(); i++) {
+            if (Entity::searchFlags(Entity::entityList[i], SELECTED))
+                return Entity::entityList[i];
+        }
+        return Entity::ErrorEntity;
+    }
     //TODO create my own collision.
     //inline void setCollisionDelta() {
         //int width;
@@ -131,7 +158,7 @@ namespace Entity {
         //}
     //}
 
-    //Render entities in order Y position.
+    //Render entities in order of Y position.
     inline void renderEntities() {
     //setCollisionDelta();
         //Savant genius render the boxes used for collision *under* the grass LOL.
